@@ -1,0 +1,967 @@
+/* ============================================================
+   Leslie's portfolio — playful neo-brutalist theme
+   Colors, fonts, and spacing all live in :root below.
+   ============================================================ */
+
+:root {
+  --bg: #fff8f0;
+  --ink: #1a1a2e;
+  --coral: #ff5d5d;
+  --yellow: #ffc839;
+  --purple: #7c5cff;
+  --teal: #2ec4b6;
+  --pink: #ff8fab;
+
+  --border: 3px solid var(--ink);
+  --shadow: 6px 6px 0 var(--ink);
+  --shadow-sm: 3px 3px 0 var(--ink);
+
+  --font-display: 'Unbounded', sans-serif;
+  --font-body: 'Space Grotesk', sans-serif;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 1.05rem;
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+/* subtle dotted paper texture */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: radial-gradient(var(--ink) 1px, transparent 1px);
+  background-size: 28px 28px;
+  opacity: 0.06;
+  pointer-events: none;
+  z-index: 0;
+}
+
+main {
+  position: relative;
+  z-index: 1;
+}
+
+/* ---------- Nav ---------- */
+
+.nav {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.9rem 1.5rem;
+  background: var(--bg);
+  border-bottom: var(--border);
+}
+
+.nav-logo {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 1.3rem;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.nav-logo-dot {
+  color: var(--coral);
+}
+
+.nav-links {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.nav-link {
+  color: var(--ink);
+  text-decoration: none;
+  font-weight: 700;
+  padding: 0.3rem 0.7rem;
+  border-radius: 999px;
+  border: 3px solid transparent;
+  transition: all 0.15s ease;
+}
+
+.nav-link:hover {
+  border-color: var(--ink);
+  background: var(--yellow);
+  transform: rotate(-2deg);
+}
+
+/* ---------- Hero ---------- */
+
+.hero {
+  position: relative;
+  min-height: 88vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 4rem 1.5rem 3rem;
+  overflow: hidden;
+}
+
+.hero-blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(70px);
+  opacity: 0.45;
+  animation: float 9s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.hero-blob-1 {
+  width: 380px;
+  height: 380px;
+  background: var(--purple);
+  top: -80px;
+  left: -100px;
+}
+
+.hero-blob-2 {
+  width: 320px;
+  height: 320px;
+  background: var(--coral);
+  bottom: -60px;
+  right: -80px;
+  animation-delay: -4s;
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    transform: translateY(30px) scale(1.08);
+  }
+}
+
+.hero-photo-wrap {
+  position: relative;
+  margin-bottom: 1.2rem;
+}
+
+.hero-photo {
+  width: 170px;
+  height: 170px;
+  object-fit: cover;
+  object-position: top;
+  border-radius: 50%;
+  border: var(--border);
+  box-shadow: var(--shadow);
+  background: var(--yellow);
+}
+
+.hero-roles {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 1.6rem;
+  max-width: 620px;
+}
+
+.role-tag {
+  display: inline-block;
+  font-size: 0.8rem;
+  font-weight: 700;
+  padding: 0.2rem 0.7rem;
+  border: 2px solid var(--ink);
+  border-radius: 999px;
+  background: #fff;
+  transform: rotate(var(--rot, 0deg));
+}
+
+.hero-hello {
+  font-size: 1.1rem;
+  margin-bottom: 1.4rem;
+  transform: rotate(-3deg);
+}
+
+.hero-name {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: clamp(2.6rem, 9vw, 6rem);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  display: flex;
+  flex-direction: column;
+}
+
+.hero-name-word {
+  display: inline-block;
+}
+
+.hero-name-word:nth-child(2) {
+  color: transparent;
+  -webkit-text-stroke: 3px var(--ink);
+}
+
+.hero-title {
+  margin-top: 1.6rem;
+  font-size: 1.15rem;
+}
+
+.hero-tagline {
+  margin-top: 1.4rem;
+  font-size: 1.25rem;
+  max-width: 34ch;
+}
+
+.hero-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 2.2rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.hero-socials {
+  display: flex;
+  gap: 0.7rem;
+  margin-top: 2.4rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+/* ---------- Reusable bits ---------- */
+
+.sticker {
+  display: inline-block;
+  padding: 0.35rem 0.9rem;
+  border: var(--border);
+  border-radius: 999px;
+  box-shadow: var(--shadow-sm);
+  font-weight: 700;
+  background: #fff;
+}
+
+.sticker-yellow {
+  background: var(--yellow);
+}
+
+.sticker-coral {
+  background: var(--coral);
+  color: #fff;
+}
+
+.sticker-fact {
+  background: #fff;
+  transform: rotate(var(--rot, -2deg));
+}
+
+.btn {
+  display: inline-block;
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 1.05rem;
+  padding: 0.75rem 1.6rem;
+  border: var(--border);
+  border-radius: 14px;
+  box-shadow: var(--shadow);
+  text-decoration: none;
+  color: var(--ink);
+  background: #fff;
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+
+.btn:hover {
+  transform: translate(3px, 3px);
+  box-shadow: 3px 3px 0 var(--ink);
+}
+
+.btn:active {
+  transform: translate(6px, 6px);
+  box-shadow: 0 0 0 var(--ink);
+}
+
+.btn-primary {
+  background: var(--purple);
+  color: #fff;
+}
+
+.btn-ghost {
+  background: var(--bg);
+}
+
+.btn-big {
+  font-size: 1.2rem;
+  word-break: break-all;
+}
+
+.social-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.35rem 0.85rem;
+  border: var(--border);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--ink);
+  font-weight: 700;
+  font-size: 0.9rem;
+  text-decoration: none;
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.12s ease, background 0.12s ease;
+}
+
+.social-chip:hover {
+  transform: rotate(-3deg) scale(1.06);
+  background: var(--yellow);
+}
+
+.card {
+  background: #fff;
+  border: var(--border);
+  border-radius: 22px;
+  box-shadow: var(--shadow);
+  padding: 1.8rem;
+}
+
+.card-tilt-left {
+  transform: rotate(-1deg);
+}
+
+.card-tilt-right {
+  transform: rotate(1deg);
+}
+
+/* ---------- Sections ---------- */
+
+.section {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 5rem 1.5rem;
+}
+
+.section-title {
+  font-family: var(--font-display);
+  font-size: clamp(1.8rem, 5vw, 2.8rem);
+  font-weight: 900;
+  margin-bottom: 2.5rem;
+  transform: rotate(-1.5deg);
+}
+
+.section-title-inner {
+  display: inline-block;
+  padding: 0.2rem 1rem;
+  background: var(--yellow);
+  border: var(--border);
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+}
+
+/* ---------- Marquee ---------- */
+
+.marquee {
+  overflow: hidden;
+  border-top: var(--border);
+  border-bottom: var(--border);
+  background: var(--ink);
+  color: var(--bg);
+  padding: 0.7rem 0;
+}
+
+.marquee-track {
+  display: flex;
+  gap: 2rem;
+  width: max-content;
+  white-space: nowrap;
+}
+
+.marquee-left {
+  animation: scroll-left 25s linear infinite;
+}
+
+.marquee-right {
+  animation: scroll-left 25s linear infinite reverse;
+}
+
+@keyframes scroll-left {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-33.333%);
+  }
+}
+
+.marquee-item {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1rem;
+  letter-spacing: 0.08em;
+}
+
+.marquee-star {
+  color: var(--yellow);
+  margin-left: 2rem;
+}
+
+/* ---------- About ---------- */
+
+.about-grid {
+  display: grid;
+  grid-template-columns: 1.6fr 1fr;
+  gap: 2.5rem;
+  align-items: center;
+}
+
+.about-para + .about-para {
+  margin-top: 1rem;
+}
+
+.about-location {
+  margin-top: 1.4rem;
+  font-weight: 700;
+}
+
+.about-side {
+  display: flex;
+  flex-direction: column;
+  gap: 1.6rem;
+  align-items: center;
+}
+
+.about-photo-frame {
+  border: var(--border);
+  border-radius: 22px;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  transform: rotate(2deg);
+  max-width: 280px;
+}
+
+.about-photo {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.about-facts {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  align-items: flex-start;
+}
+
+.about-facts .sticker-fact:nth-child(1) {
+  --rot: -3deg;
+  background: var(--pink);
+}
+
+.about-facts .sticker-fact:nth-child(2) {
+  --rot: 2deg;
+  background: var(--teal);
+}
+
+.about-facts .sticker-fact:nth-child(3) {
+  --rot: -1.5deg;
+  background: var(--yellow);
+}
+
+/* ---------- Services ---------- */
+
+.services-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+  gap: 1.8rem;
+}
+
+.service-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.service-emoji {
+  font-size: 2.2rem;
+  line-height: 1;
+}
+
+.service-title {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+}
+
+.service-blurb {
+  font-size: 0.95rem;
+}
+
+.service-resume {
+  margin-top: auto;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+/* Spans the full width under the grid. Square corners and no tilt, so it reads
+   as a different kind of thing to the five cards rather than a sixth one. */
+.services-cv {
+  display: block;
+  margin-top: 2rem;
+  padding: 1.3rem;
+  border: var(--border);
+  border-radius: 4px;
+  box-shadow: var(--shadow);
+  background: var(--bg);
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 700;
+  text-align: center;
+  text-decoration: none;
+  color: var(--ink);
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+
+.services-cv:hover {
+  transform: translate(3px, 3px);
+  box-shadow: 3px 3px 0 var(--ink);
+}
+
+/* ---------- Skills ---------- */
+
+.skill-group {
+  margin-bottom: 2.2rem;
+}
+
+.skill-group-title {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+  transform: rotate(-1deg);
+  display: inline-block;
+  padding: 0.1rem 0.7rem;
+  background: var(--teal);
+  border: 2px solid var(--ink);
+  border-radius: 10px;
+}
+
+.skills-cloud {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.skill-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.5rem 1.1rem;
+  border: var(--border);
+  border-radius: 999px;
+  box-shadow: var(--shadow-sm);
+  font-weight: 700;
+  font-size: 0.95rem;
+  background: #fff;
+  transition: transform 0.15s ease;
+}
+
+.skill-chip:hover {
+  animation: wiggle 0.4s ease;
+  animation-delay: var(--wiggle-delay, 0s);
+}
+
+@keyframes wiggle {
+  0%,
+  100% {
+    transform: rotate(0);
+  }
+  25% {
+    transform: rotate(-4deg) scale(1.05);
+  }
+  75% {
+    transform: rotate(4deg) scale(1.05);
+  }
+}
+
+/* ---------- Projects ---------- */
+
+.projects-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2rem;
+}
+
+.project-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  color: var(--ink);
+  text-decoration: none;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+/* Only the cards that lead somewhere lift on hover. A pending card that moved
+   under the cursor would be promising a click it cannot honour. */
+.project-card:not(.project-card-pending):hover {
+  transform: rotate(0deg) translate(-4px, -4px);
+  box-shadow: 10px 10px 0 var(--ink);
+}
+
+.project-card-pending {
+  cursor: default;
+}
+
+.color-coral {
+  background: #ffe3e3;
+}
+
+.color-purple {
+  background: #ebe4ff;
+}
+
+.color-teal {
+  background: #dcf7f4;
+}
+
+.color-yellow {
+  background: #fff3d1;
+}
+
+.project-emoji {
+  font-size: 2.6rem;
+  line-height: 1;
+}
+
+.project-title {
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  font-weight: 700;
+}
+
+.project-desc {
+  font-size: 0.98rem;
+}
+
+.project-tech {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: auto;
+}
+
+.tech-tag {
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 0.15rem 0.6rem;
+  border: 2px solid var(--ink);
+  border-radius: 999px;
+  background: #fff;
+}
+
+.project-link {
+  font-weight: 700;
+  margin-top: 0.4rem;
+}
+
+.project-link-pending {
+  align-self: flex-start;
+  padding: 0.15rem 0.7rem;
+  border: 2px dashed var(--ink);
+  border-radius: 999px;
+  font-size: 0.82rem;
+  background: #fff;
+}
+
+/* ---------- Experience / timeline ---------- */
+
+.timeline {
+  list-style: none;
+  position: relative;
+  padding-left: 2.2rem;
+}
+
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 0.55rem;
+  top: 0.5rem;
+  bottom: 0.5rem;
+  width: 4px;
+  background: var(--ink);
+  border-radius: 4px;
+}
+
+.timeline-item {
+  position: relative;
+  margin-bottom: 2.2rem;
+}
+
+.timeline-dot {
+  position: absolute;
+  left: -2.2rem;
+  top: 1.4rem;
+  width: 1.3rem;
+  height: 1.3rem;
+  background: var(--coral);
+  border: var(--border);
+  border-radius: 50%;
+}
+
+.timeline-period {
+  font-size: 0.85rem;
+  margin-bottom: 0.6rem;
+}
+
+.timeline-role {
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  margin-top: 0.6rem;
+}
+
+.timeline-org {
+  font-weight: 700;
+  opacity: 0.75;
+}
+
+.timeline-summary {
+  margin-top: 0.5rem;
+}
+
+/* ---------- Education & certs ---------- */
+
+.education-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.8rem;
+  margin-bottom: 2.4rem;
+}
+
+.edu-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  align-items: flex-start;
+}
+
+.edu-title {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+}
+
+.edu-org {
+  font-weight: 700;
+  opacity: 0.75;
+}
+
+.edu-period {
+  font-size: 0.8rem;
+}
+
+.edu-details {
+  font-size: 0.92rem;
+}
+
+.certs {
+  display: flex;
+  flex-direction: column;
+  gap: 1.4rem;
+}
+
+.cert-block {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+.cert-org {
+  font-size: 0.85rem;
+  flex-shrink: 0;
+}
+
+.cert-items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding-top: 0.2rem;
+}
+
+/* ---------- Contact ---------- */
+
+.contact {
+  text-align: center;
+}
+
+.contact-card {
+  background: var(--purple);
+  color: #fff;
+  padding: 3rem 2rem;
+  transform: rotate(-0.5deg);
+}
+
+.contact-heading {
+  font-family: var(--font-display);
+  font-size: clamp(1.6rem, 4.5vw, 2.4rem);
+  margin-bottom: 0.8rem;
+}
+
+.contact-sub {
+  margin-bottom: 1.8rem;
+  opacity: 0.9;
+}
+
+.contact-details {
+  display: flex;
+  justify-content: center;
+  gap: 0.7rem;
+  flex-wrap: wrap;
+  margin-top: 1.6rem;
+}
+
+.contact-socials {
+  display: flex;
+  justify-content: center;
+  gap: 0.7rem;
+  flex-wrap: wrap;
+  margin-top: 1.8rem;
+}
+
+.footer {
+  margin-top: 3rem;
+  font-size: 0.9rem;
+  opacity: 0.7;
+}
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 760px) {
+  .about-grid,
+  .projects-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .about-facts {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .nav {
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+
+  .section {
+    padding: 3.5rem 1.2rem;
+  }
+}
+
+/* Respect reduced-motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  .hero-blob,
+  .marquee-track {
+    animation: none;
+  }
+
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+/* ---------- Project filters ---------- */
+
+/* .visually-hidden was not defined anywhere, so the "opens in a new tab" hint
+ * would have rendered on screen. It is here rather than inline because other
+ * components will want it too. */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.projects-intro {
+  max-width: 46ch;
+  margin: -0.6rem 0 1.4rem;
+  font-size: 1rem;
+}
+
+.project-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-bottom: 0.9rem;
+}
+
+.project-filter {
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 700;
+  padding: 0.35rem 0.9rem;
+  border: var(--border);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--ink);
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.1s ease, box-shadow 0.1s ease, background 0.1s ease;
+}
+
+.project-filter:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0 var(--ink);
+}
+
+/* The pressed state follows aria-pressed rather than a separate class, so the
+ * two cannot disagree — a filter that looks selected and announces itself as
+ * unselected is the usual failure here. */
+.project-filter[aria-pressed='true'] {
+  background: var(--ink);
+  color: var(--bg);
+  transform: translate(1px, 1px);
+  box-shadow: 1px 1px 0 var(--ink);
+}
+
+.project-filter:focus-visible {
+  outline: 3px solid var(--purple);
+  outline-offset: 3px;
+}
+
+.projects-count {
+  font-size: 0.85rem;
+  font-weight: 700;
+  opacity: 0.7;
+  margin: 0 0 1.4rem;
+}
+
+.project-field {
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.62;
+  margin-top: -0.5rem;
+}
+
+/* ---------- Skills: list semantics ---------- */
+
+/* The cloud is a <ul> now, so a screen reader announces how many tools are in
+ * each group before reading them. Only the list defaults are reset — the
+ * flex layout and the chip's inline-flex column (name, bar, percentage) are
+ * defined above and must not be overridden here. */
+.skills-cloud {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
