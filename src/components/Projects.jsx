@@ -51,17 +51,6 @@ export default function Projects() {
         <span className="section-title-inner">Things I&apos;ve built</span>
       </h2>
 
-      {/* "11 of 11" alone reads as everything I have rather than everything I
-          chose. No hard total here — the count keeps changing, and a number
-          that goes stale is worse than no number. */}
-      <p className="projects-intro">
-        Eleven picked out of 30+ public repositories — every number below can be reproduced by
-        running the code.{' '}
-        <a href={GITHUB} target="_blank" rel="noreferrer">
-          All of them on GitHub →<span className="visually-hidden"> (opens in a new tab)</span>
-        </a>
-      </p>
-
       {/* aria-pressed carries the state, so the styling and what a screen
           reader announces cannot drift apart. */}
       <div className="project-filters" role="group" aria-label="Filter projects by field">
@@ -78,8 +67,10 @@ export default function Projects() {
         ))}
       </div>
 
-      {/* Pressing a filter changes the grid visibly and, without this, silently. */}
-      <p className="projects-count" aria-live="polite">
+      {/* Pressing a filter changes the grid visibly and, without this, silently.
+          Hidden from the page but not from the announcement — a sighted reader
+          can see the grid change, a screen reader reader cannot. */}
+      <p className="visually-hidden" aria-live="polite">
         {visible.length} of {projects.length} projects
       </p>
 
@@ -131,6 +122,12 @@ export default function Projects() {
           )
         })}
       </div>
+
+      {/* Eleven cards on their own read as everything I have. This is the only
+          thing saying there is more. */}
+      <a href={GITHUB} target="_blank" rel="noreferrer" className="projects-github">
+        More on GitHub →<span className="visually-hidden"> (opens in a new tab)</span>
+      </a>
     </section>
   )
 }

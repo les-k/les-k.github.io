@@ -514,7 +514,11 @@ main {
 
 /* Spans the full width under the grid. Square corners and no tilt, so it reads
    as a different kind of thing to the five cards rather than a sixth one. */
-.services-cv {
+/* Two of these: "CV" under What I do, "More on GitHub" under the projects.
+   Both are the same idea — the fuller version of the section above them — so
+   they share a style rather than each inventing one. */
+.services-cv,
+.projects-github {
   display: block;
   margin-top: 2rem;
   padding: 1.3rem;
@@ -531,7 +535,8 @@ main {
   transition: transform 0.12s ease, box-shadow 0.12s ease;
 }
 
-.services-cv:hover {
+.services-cv:hover,
+.projects-github:hover {
   transform: translate(3px, 3px);
   box-shadow: 3px 3px 0 var(--ink);
 }
@@ -891,25 +896,14 @@ main {
   white-space: nowrap;
 }
 
-.projects-intro {
-  max-width: 52ch;
-  margin: -0.6rem 0 1.4rem;
-  font-size: 1rem;
-}
-
-.projects-intro a {
-  font-weight: 700;
-  color: var(--ink);
-  text-decoration: underline;
-  text-underline-offset: 3px;
-  white-space: nowrap;
-}
 
 .project-filters {
   display: flex;
   flex-wrap: wrap;
   gap: 0.6rem;
-  margin-bottom: 0.9rem;
+  /* Was 0.9rem, with the visible project count carrying another 1.4rem below
+     it. The count is now screen-reader only, so the gap lives here instead. */
+  margin-bottom: 2.2rem;
 }
 
 .project-filter {
@@ -944,13 +938,6 @@ main {
 .project-filter:focus-visible {
   outline: 3px solid var(--purple);
   outline-offset: 3px;
-}
-
-.projects-count {
-  font-size: 0.85rem;
-  font-weight: 700;
-  opacity: 0.7;
-  margin: 0 0 1.4rem;
 }
 
 .project-field {
