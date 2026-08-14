@@ -1,8 +1,10 @@
 import { useMemo, useState } from 'react'
 
-import { projects, services } from '../data.js'
+import { projects, services, socials } from '../data.js'
 
 const ALL = 'Everything'
+
+const GITHUB = socials.find((s) => s.label === 'GitHub').url
 
 // `pending` is a date, not a flag, so the notice removes itself. Once the
 // repository's publish date has passed the card becomes an ordinary link with
@@ -49,8 +51,15 @@ export default function Projects() {
         <span className="section-title-inner">Things I&apos;ve built</span>
       </h2>
 
+      {/* "11 of 11" alone reads as everything I have rather than everything I
+          chose. No hard total here — the count keeps changing, and a number
+          that goes stale is worse than no number. */}
       <p className="projects-intro">
-        Every one is public, and every number below can be reproduced by running the code.
+        Eleven picked out of 30+ public repositories — every number below can be reproduced by
+        running the code.{' '}
+        <a href={GITHUB} target="_blank" rel="noreferrer">
+          All of them on GitHub →<span className="visually-hidden"> (opens in a new tab)</span>
+        </a>
       </p>
 
       {/* aria-pressed carries the state, so the styling and what a screen

@@ -892,9 +892,17 @@ main {
 }
 
 .projects-intro {
-  max-width: 46ch;
+  max-width: 52ch;
   margin: -0.6rem 0 1.4rem;
   font-size: 1rem;
+}
+
+.projects-intro a {
+  font-weight: 700;
+  color: var(--ink);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  white-space: nowrap;
 }
 
 .project-filters {
