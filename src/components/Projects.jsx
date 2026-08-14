@@ -12,11 +12,23 @@ const TODAY = new Date()
 
 function pendingUntil(iso) {
   if (!iso) return null
-  // End of the publish day: the queue publishes at some point during it, and a
-  // notice that lingers a few hours is better than a link that 404s.
-  const until = new Date(`${iso}T23:59:59`)
+
+  // An absolute instant, not a bare date. The queue runs at 10:00 EAT with a
+  // few minutes of jitter, so these are set to 08:00 UTC — about 45 minutes of
+  // margin after the latest it should finish. The trailing Z is load-bearing:
+  // without it every browser reads the time in its own zone, and a reader far
+  // enough east would clear the notice hours before the repository exists.
+  const until = new Date(iso)
   if (until <= TODAY) return null
-  return until.toLocaleDateString('en-GB', { day: 'numeric', month: 'long' })
+
+  // Label built from the date part in UTC, so every reader is told the same
+  // day regardless of where they are.
+  const [y, m, d] = iso.slice(0, 10).split('-').map(Number)
+  return new Date(Date.UTC(y, m - 1, d)).toLocaleDateString('en-GB', {
+    day: 'numeric',
+    month: 'long',
+    timeZone: 'UTC',
+  })
 }
 
 export default function Projects() {

@@ -176,7 +176,7 @@ export const projects = [
       '224 tests, 54 of them proving the wrong person cannot act. Deleting the ownership check made exactly three fail — everything else passed, including the whole happy path.',
     tech: ['FastAPI', 'React', 'SQLite', 'Docker'],
     link: 'https://github.com/les-k/job-board',
-    pending: '2026-08-22',
+    pending: '2026-08-22T08:00:00Z',
     color: 'purple',
   },
   {
@@ -187,7 +187,6 @@ export const projects = [
       'Six retrieval methods over 1,400 documents and 1,837 relevance judgments. Two of five claimed improvements failed a paired significance test — including one better on every average.',
     tech: ['Python', 'sentence-transformers', 'BM25'],
     link: 'https://github.com/les-k/semantic-search',
-    pending: '2026-08-14',
     color: 'teal',
   },
   {
@@ -208,7 +207,7 @@ export const projects = [
       'Nine accessible components where the build fails if accessibility does: 34 contrast pairings across both themes and 18 structural guards, all gating CI.',
     tech: ['React 19', 'Design tokens', 'WCAG AA'],
     link: 'https://github.com/les-k/component-library',
-    pending: '2026-08-20',
+    pending: '2026-08-20T08:00:00Z',
     color: 'purple',
   },
   {
@@ -239,7 +238,7 @@ export const projects = [
       'The tile game with the rules separated from the screen and covered by 75 tests. Every game seeded, so any board replays exactly and a bug report becomes a number.',
     tech: ['JavaScript', 'node:test', 'Zero dependencies'],
     link: 'https://github.com/les-k/2048',
-    pending: '2026-08-18',
+    pending: '2026-08-18T08:00:00Z',
     color: 'coral',
   },
   {
@@ -260,7 +259,7 @@ export const projects = [
       'Lighthouse 100 across all four categories at 22.6 KB, with a contrast check gating CI — after Lighthouse caught a failure the check had missed by measuring the wrong surface.',
     tech: ['HTML', 'CSS', 'Lighthouse 100'],
     link: 'https://github.com/les-k/sweep-landing',
-    pending: '2026-08-16',
+    pending: '2026-08-16T08:00:00Z',
     color: 'yellow',
   },
   {
