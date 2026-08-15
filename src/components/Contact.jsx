@@ -1,5 +1,11 @@
 import { profile, socials } from '../data.js'
 
+// This card already offers three ways to email — the button and both other
+// addresses — so the mailto chip is a fourth copy of something on screen.
+// Matched on the URL rather than the label, so renaming the entry can't
+// quietly bring it back. The hero keeps it: nothing else there is an address.
+const links = socials.filter((s) => !s.url.startsWith('mailto:'))
+
 export default function Contact() {
   return (
     <section id="contact" className="section contact">
@@ -24,7 +30,7 @@ export default function Contact() {
           ))}
         </div>
         <div className="contact-socials">
-          {socials.map((s) => (
+          {links.map((s) => (
             <a
               key={s.label}
               href={s.url}
