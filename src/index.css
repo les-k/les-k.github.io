@@ -774,30 +774,6 @@ main {
   font-size: 0.92rem;
 }
 
-.certs {
-  display: flex;
-  flex-direction: column;
-  gap: 1.4rem;
-}
-
-.cert-block {
-  display: flex;
-  gap: 1rem;
-  align-items: flex-start;
-  flex-wrap: wrap;
-}
-
-.cert-org {
-  font-size: 0.85rem;
-  flex-shrink: 0;
-}
-
-.cert-items {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  padding-top: 0.2rem;
-}
 
 /* ---------- Contact ---------- */
 

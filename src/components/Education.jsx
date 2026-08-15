@@ -1,4 +1,4 @@
-import { education, certifications } from '../data.js'
+import { education } from '../data.js'
 
 export default function Education() {
   return (
@@ -13,20 +13,6 @@ export default function Education() {
             <p className="edu-org">{e.org}</p>
             <p className="edu-period sticker sticker-yellow">{e.period}</p>
             <p className="edu-details">{e.details}</p>
-          </div>
-        ))}
-      </div>
-      <div className="certs">
-        {certifications.map((c) => (
-          <div key={c.org} className="cert-block">
-            <span className="cert-org sticker sticker-coral">{c.org}</span>
-            <div className="cert-items">
-              {c.items.map((item) => (
-                <span key={item} className="tech-tag">
-                  {item}
-                </span>
-              ))}
-            </div>
           </div>
         ))}
       </div>

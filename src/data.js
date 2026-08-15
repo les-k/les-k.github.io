@@ -357,9 +357,9 @@ export const education = [
   },
 ]
 
-export const certifications = [
-  { org: 'Computer Pride', items: ['ICDL Profile'] },
-]
+// `certifications` used to live here. With eight of them a summary strip under
+// the cards earned its place; with one, it repeated the ICDL card word for
+// word. The cert itself is the second entry in `education` above.
 
 // Words that scroll across the marquee strips — one per old site
 export const marqueeWords = [
