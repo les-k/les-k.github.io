@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>MCP Server Security: Field Notes — Leslie Kadenge</title>
+<meta name="description" content="Field notes from reading thirteen production MCP servers: the ecosystem hardened faster than the fear narrative admits, and the gap worth paying for is between designing securely and showing it." />
+<link rel="icon" href="/favicon.svg" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600;800;900&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet" />
+<style>
+:root{
+  --bg:#fff8f0; --ink:#1a1a2e;
+  --coral:#ff5d5d; --yellow:#ffc839; --purple:#7c5cff; --teal:#2ec4b6; --pink:#ff8fab;
+  --border:3px solid var(--ink);
+  --shadow:6px 6px 0 var(--ink);
+  --shadow-sm:3px 3px 0 var(--ink);
+  --font-display:'Unbounded',sans-serif;
+  --font-body:'Space Grotesk',sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:var(--font-body);font-size:1.05rem;line-height:1.65;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(var(--ink) 1px,transparent 1px);background-size:28px 28px;opacity:.06;pointer-events:none;z-index:0}
+main{position:relative;z-index:1}
+
+/* top bar */
+.bar{position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;
+  padding:.9rem 1.5rem;background:var(--bg);border-bottom:var(--border)}
+.logo{font-family:var(--font-display);font-weight:900;font-size:1.25rem;color:var(--ink);text-decoration:none}
+.logo .dot{color:var(--coral)}
+.back{font-weight:700;text-decoration:none;color:var(--ink);border:var(--border);background:var(--yellow);
+  padding:.4rem .8rem;box-shadow:var(--shadow-sm);transition:transform .1s,box-shadow .1s}
+.back:hover{transform:translate(-2px,-2px);box-shadow:5px 5px 0 var(--ink)}
+
+.wrap{max-width:760px;margin:0 auto;padding:3rem 1.5rem 4rem}
+
+/* header block */
+.tag{display:inline-block;font-family:var(--font-display);font-weight:800;font-size:.72rem;letter-spacing:.08em;
+  text-transform:uppercase;background:var(--purple);color:#fff;border:var(--border);padding:.3rem .7rem;box-shadow:var(--shadow-sm)}
+h1{font-family:var(--font-display);font-weight:900;line-height:1.05;font-size:clamp(2rem,6vw,3.2rem);margin:1.2rem 0 .8rem}
+.byline{font-weight:500;color:#4a4a5e;font-size:1rem}
+.lede{font-size:1.18rem;margin-top:1.6rem}
+
+h2{font-family:var(--font-display);font-weight:800;font-size:clamp(1.3rem,3.5vw,1.7rem);line-height:1.15;
+  margin:2.8rem 0 1rem;padding-bottom:.5rem;border-bottom:var(--border)}
+h2 .n{color:var(--coral)}
+p{margin:1rem 0}
+strong{font-weight:700}
+em{font-style:italic}
+code{font-family:'Space Grotesk',ui-monospace,monospace;background:#fff;border:2px solid var(--ink);
+  border-radius:4px;padding:.05rem .35rem;font-size:.9em;font-weight:500}
+
+/* the servers grid */
+.servers{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:.7rem;margin:1.4rem 0}
+.srv{border:var(--border);background:#fff;box-shadow:var(--shadow-sm);padding:.7rem .8rem}
+.srv b{font-family:var(--font-display);font-weight:700;font-size:.95rem;display:block}
+.srv span{font-size:.85rem;color:#4a4a5e}
+
+/* callout / pull */
+.pull{border:var(--border);background:var(--yellow);box-shadow:var(--shadow);padding:1.2rem 1.3rem;margin:1.6rem 0;
+  font-family:var(--font-display);font-weight:600;font-size:1.15rem;line-height:1.35}
+.note{border:var(--border);background:#fff;box-shadow:var(--shadow-sm);padding:1rem 1.2rem;margin:1.4rem 0;font-size:.98rem}
+.note b{font-family:var(--font-display)}
+
+/* finding accent bars */
+.f1{border-left:10px solid var(--teal);padding-left:1rem}
+.f2{border-left:10px solid var(--purple);padding-left:1rem}
+.f3{border-left:10px solid var(--coral);padding-left:1rem}
+.f4{border-left:10px solid var(--yellow);padding-left:1rem}
+
+.method{margin-top:3rem;padding-top:1.4rem;border-top:var(--border);font-size:.9rem;color:#4a4a5e;font-style:italic}
+
+/* footer cta */
+.cta{margin-top:2.4rem;border:var(--border);background:var(--ink);color:var(--bg);box-shadow:var(--shadow);padding:1.6rem 1.5rem}
+.cta h3{font-family:var(--font-display);font-weight:800;font-size:1.3rem;margin-bottom:.5rem}
+.cta a{color:var(--yellow);font-weight:700}
+</style>
+</head>
+<body>
+<main>
+  <div class="bar">
+    <a class="logo" href="/">les-k<span class="dot">.</span></a>
+    <a class="back" href="/">← back to site</a>
+  </div>
+
+  <article class="wrap">
+    <span class="tag">Field notes · Security</span>
+    <h1>MCP server security: field notes from reading thirteen of them</h1>
+    <p class="byline">Leslie Kadenge · 26 August 2026</p>
+
+    <p class="lede">Over August 2026 I read the source of thirteen production Model Context Protocol servers — all shipped by funded companies, all in use, none toy projects. I went in expecting the picture the security-tooling vendors paint: unguarded destructive tools, path traversal everywhere, prompt injection straight through to the model. That is not what I found. The ecosystem has hardened faster than the fear narrative admits, and the gaps that remain are narrower and more specific than “MCP is insecure” suggests.</p>
+
+    <p>These are the notes. Where a server does something well I name it, because good work should be citable. Where I found a gap I describe the <em>class</em> and not the product — several of these were disclosed privately to the maintainer, and a public writeup is not the place to burn a team before they have had a chance to fix it.</p>
+
+    <h2>The servers</h2>
+    <p>Thirteen production MCP servers, all shipped by funded companies and actively maintained, read across August 2026:</p>
+    <div class="servers">
+      <div class="srv"><b>Vantage</b><span>cloud cost management</span></div>
+      <div class="srv"><b>Plane</b><span>project management</span></div>
+      <div class="srv"><b>Datalayer</b><span>Jupyter notebook execution</span></div>
+      <div class="srv"><b>Oxylabs</b><span>web scraping &amp; proxy</span></div>
+      <div class="srv"><b>Softeria</b><span>Microsoft 365 integration</span></div>
+      <div class="srv"><b>NetBox Labs</b><span>network infrastructure</span></div>
+      <div class="srv"><b>Mobile Next</b><span>mobile-app automation</span></div>
+      <div class="srv"><b>MariaDB</b><span>relational database</span></div>
+      <div class="srv"><b>StarRocks</b><span>analytics database</span></div>
+      <div class="srv"><b>Zilliz / Milvus</b><span>vector database</span></div>
+      <div class="srv"><b>Keboola</b><span>data platform</span></div>
+      <div class="srv"><b>Scrapeless</b><span>web scraping</span></div>
+      <div class="srv"><b>TinyFish / AgentQL</b><span>web data extraction</span></div>
+    </div>
+
+    <h2>What “read in full” means</h2>
+    <p>For each server I cloned the repository, read the tool-registration code and the handlers behind the destructive tools, and — where a claim could be checked by running it rather than by reading it — I ran it. When a server said “read-only”, I looked for the thing that enforced it, not the sentence that promised it. When a resolver claimed to contain writes to a directory, I fed it <code>../</code> and an absolute path and watched where the file actually landed.</p>
+    <div class="pull">A safety property you can read in a README is not a safety property. The only ones that count are the ones a machine enforces or a test proves.</div>
+
+    <h2 class="f1"><span class="n">Finding 1</span> — tool annotations are now the norm</h2>
+    <div class="f1">
+    <p>The single most encouraging result. <code>ToolAnnotations</code> — the machine-readable hints (<code>readOnlyHint</code>, <code>destructiveHint</code>, <code>openWorldHint</code>) that let a client decide which tools to gate — have gone from rare to expected among serious servers.</p>
+    <p>One cost-management server registers <strong>127 tools</strong>, through a wrapper whose TypeScript type makes all three hints <strong>non-optional</strong>. You physically cannot add a tool to that codebase without declaring whether it is read-only, destructive, and open-world. 57 of those tools mutate state; not one is missing a hint. Not discipline, which fails — a type that refuses to compile without the answer.</p>
+    <p>A project-management server marks <code>destructive=True</code> on every delete action <strong>and ships a conformance test that fails the build</strong> if a delete is ever added without it. The guarantee is not “we remembered”; it is “CI won’t let us forget”. A notebook server that literally executes code annotates all eighteen of its tools. An enterprise productivity server derives a read-only <em>mode</em> by filtering the exposed tool list on the <code>readOnlyHint</code>, so a locked-down deployment can’t call a mutating tool because the mutating tools aren’t offered.</p>
+    <p>The lesson for anyone still building: annotations are table stakes now. Shipping without them no longer reads as “early”, it reads as “behind”.</p>
+    </div>
+
+    <h2 class="f2"><span class="n">Finding 2</span> — path handling is mostly done right</h2>
+    <div class="f2">
+    <p>The classic MCP file-write bug is a tool that takes a caller-supplied path, resolves it, and writes — without checking the result stayed inside an allowed directory. I went looking for it specifically, because I have found and fixed it in my own code twice and it is easy to get subtly wrong.</p>
+    <p>Most servers that touch the filesystem now get it right. The best example: a mobile-automation server whose screenshot tool <strong>resolves symlinks first and then checks the resolved path against an allowlist of roots</strong> — case-insensitively on Windows, which is the detail people miss. Resolve, <em>then</em> check; check the destination, not the link. It is exactly the shape I arrived at independently in my own file-deletion server — a good sign the practice is converging on something real rather than on one person’s taste.</p>
+    </div>
+
+    <h2 class="f3"><span class="n">Finding 3</span> — where the gaps actually are</h2>
+    <div class="f3">
+    <p>They exist, but they are specific, and they cluster in three places.</p>
+    <p><strong>The README–reality gap.</strong> A server states a safety property in prose — “read only by default”, “hard to misuse” — and it is <em>true today</em> but nothing enforces it. No annotation declares it, so a client can’t act on it; and sometimes a full write path sits in the codebase, unreachable but written and waiting, one wired-up call away from making the README false. What is missing is the machine check that keeps the promise real after the next contributor, or the next fork.</p>
+    <p><strong>Untrusted content returned unmarked.</strong> Servers whose purpose is reading the open web frequently return page content into the model’s context with nothing marking it as untrusted. That is the product working as designed; the gap is that <code>openWorldHint</code> exists to say “what comes back is not under your user’s control” and it often goes undeclared. On a tool that reads arbitrary pages, that hint is the difference between a host that treats the result as data and one that treats it as instructions.</p>
+    <p><strong>The occasional real hole.</strong> One server let a caller choose the output path for a written result with no containment at all — a write-anywhere primitive reachable through ordinary use, triggered by content the server was designed to read. That one I reported privately. It was the exception across thirteen servers, not the rule, which is the point.</p>
+    </div>
+
+    <h2 class="f4"><span class="n">Finding 4</span> — the gap that is worth money</h2>
+    <div class="f4">
+    <p>Put the three findings together and a pattern falls out that matters more than any single bug.</p>
+    <div class="pull">Funded MCP servers are now, overwhelmingly, <em>designed</em> securely. Almost none of them can <em>show</em> that they are.</div>
+    <p>The teams have internalised the practices — annotations, allowlists, least-privilege, read-only modes. What they lack, nearly universally, is independent verification: a second pair of eyes that read the whole thing and wrote down what they found, with a test behind each finding. Their own CI proves their own assumptions. It cannot prove the assumption they didn’t think to make.</p>
+    <p>That gap is not a criticism. It is the normal state of any codebase that grew faster than anyone had time to audit it. And it is exactly the thing an enterprise customer’s security questionnaire asks about — not “is your code good?” but “who checked it, and can I see what they found?”</p>
+    <p>And when the answer to that is “a scanner already did”, be careful with it. While I was writing this, an automated index that scores public MCP servers for trust graded one of my own servers as deficient — its three tools flagged as “missing” their annotation hints — on a server that in fact declares all four hints, correctly, on every tool, including the destructive one. The scanner had matched the protocol’s camelCase hint names (<code>readOnlyHint</code>) against the source, which, being Python, spells them in snake_case (<code>read_only_hint</code>) exactly as the SDK requires, and reported them absent. A tool that cannot reliably tell whether a safeguard is even <em>present</em> is in no position to tell you whether it is <em>correct</em>. That is the whole difference between scanning a server and reading one — and, for the person whose customer is asking, it is the difference worth paying for.</p>
+    </div>
+
+    <h2>What this means</h2>
+    <p><strong>If you are building an MCP server:</strong> the bar has risen. Annotations and correct path handling are no longer things that make you look careful; their absence is a thing that makes you look behind. The good news is the practices are now well established enough to copy from the servers named above.</p>
+    <p><strong>If you sell software with an MCP server in it:</strong> your code is probably fine. The question you will be asked is not whether it is fine, but whether anyone independent can say so. Right now, for almost everyone, the honest answer is no — and that answer is worth closing, because the person asking is usually a customer you are trying to win.</p>
+
+    <div class="cta">
+      <h3>That’s the work I do.</h3>
+      <p>Read the whole server, and write up what I find with a test behind each finding — a document you can forward to whoever asked. If that’s useful, find me at <a href="/">les-k.github.io</a> or <a href="mailto:lesliekadenge@gmail.com">lesliekadenge@gmail.com</a>.</p>
+    </div>
+
+    <p class="method">Method, in full: thirteen servers, all org-owned and actively maintained, read across three passes in August 2026. Findings verified by running the code where running it was possible. Named examples are cited for good practice; gaps are described in the aggregate and, where they rose to the level of a security issue, were disclosed privately to the maintainer before this was written. Corrections welcome.</p>
+  </article>
+</main>
+</body>
+</html>

@@ -159,6 +159,16 @@ export const skillGroups = [
 
 export const projects = [
   {
+    title: 'MCP server security — field notes',
+    emoji: '🔍',
+    field: 'AI Engineering',
+    description:
+      'What I found reading thirteen production MCP servers from funded companies: the ecosystem hardened faster than the fear narrative admits, and the gap worth paying for is between designing securely and being able to show it.',
+    tech: ['Security', 'MCP', 'Writing'],
+    link: '/field-notes.html',
+    color: 'teal',
+  },
+  {
     title: 'Credit card fraud detection',
     emoji: '🕵️',
     field: 'Data Science & Analysis',
