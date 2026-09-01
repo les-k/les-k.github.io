@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Assessment: Elasticsearch MCP server — Leslie Kadenge</title>
+<meta name="description" content="A public security assessment of Elastic's MCP server — clean annotations in Rust, with an honest note on test depth." />
+<link rel="icon" href="/favicon.svg" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600;800;900&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet" />
+<style>
+:root{
+  --bg:#fff8f0; --ink:#1a1a2e;
+  --coral:#ff5d5d; --yellow:#ffc839; --purple:#7c5cff; --teal:#2ec4b6; --pink:#ff8fab;
+  --border:3px solid var(--ink);
+  --shadow:6px 6px 0 var(--ink);
+  --shadow-sm:3px 3px 0 var(--ink);
+  --font-display:'Unbounded',sans-serif;
+  --font-body:'Space Grotesk',sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:var(--font-body);font-size:1.05rem;line-height:1.65;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(var(--ink) 1px,transparent 1px);background-size:28px 28px;opacity:.06;pointer-events:none;z-index:0}
+main{position:relative;z-index:1}
+
+/* top bar */
+.bar{position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;
+  padding:.9rem 1.5rem;background:var(--bg);border-bottom:var(--border)}
+.logo{font-family:var(--font-display);font-weight:900;font-size:1.25rem;color:var(--ink);text-decoration:none}
+.logo .dot{color:var(--coral)}
+.back{font-weight:700;text-decoration:none;color:var(--ink);border:var(--border);background:var(--yellow);
+  padding:.4rem .8rem;box-shadow:var(--shadow-sm);transition:transform .1s,box-shadow .1s}
+.back:hover{transform:translate(-2px,-2px);box-shadow:5px 5px 0 var(--ink)}
+
+.wrap{max-width:760px;margin:0 auto;padding:3rem 1.5rem 4rem}
+
+/* header block */
+.tag{display:inline-block;font-family:var(--font-display);font-weight:800;font-size:.72rem;letter-spacing:.08em;
+  text-transform:uppercase;background:var(--purple);color:#fff;border:var(--border);padding:.3rem .7rem;box-shadow:var(--shadow-sm)}
+h1{font-family:var(--font-display);font-weight:900;line-height:1.05;font-size:clamp(2rem,6vw,3.2rem);margin:1.2rem 0 .8rem}
+.byline{font-weight:500;color:#4a4a5e;font-size:1rem}
+.lede{font-size:1.18rem;margin-top:1.6rem}
+
+h2{font-family:var(--font-display);font-weight:800;font-size:clamp(1.3rem,3.5vw,1.7rem);line-height:1.15;
+  margin:2.8rem 0 1rem;padding-bottom:.5rem;border-bottom:var(--border)}
+h2 .n{color:var(--coral)}
+p{margin:1rem 0}
+strong{font-weight:700}
+em{font-style:italic}
+code{font-family:'Space Grotesk',ui-monospace,monospace;background:#fff;border:2px solid var(--ink);
+  border-radius:4px;padding:.05rem .35rem;font-size:.9em;font-weight:500}
+
+/* the servers grid */
+.servers{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:.7rem;margin:1.4rem 0}
+.srv{border:var(--border);background:#fff;box-shadow:var(--shadow-sm);padding:.7rem .8rem}
+.srv b{font-family:var(--font-display);font-weight:700;font-size:.95rem;display:block}
+.srv span{font-size:.85rem;color:#4a4a5e}
+
+/* callout / pull */
+.pull{border:var(--border);background:var(--yellow);box-shadow:var(--shadow);padding:1.2rem 1.3rem;margin:1.6rem 0;
+  font-family:var(--font-display);font-weight:600;font-size:1.15rem;line-height:1.35}
+.note{border:var(--border);background:#fff;box-shadow:var(--shadow-sm);padding:1rem 1.2rem;margin:1.4rem 0;font-size:.98rem}
+.note b{font-family:var(--font-display)}
+
+/* finding accent bars */
+.f1{border-left:10px solid var(--teal);padding-left:1rem}
+.f2{border-left:10px solid var(--purple);padding-left:1rem}
+.f3{border-left:10px solid var(--coral);padding-left:1rem}
+.f4{border-left:10px solid var(--yellow);padding-left:1rem}
+
+.method{margin-top:3rem;padding-top:1.4rem;border-top:var(--border);font-size:.9rem;color:#4a4a5e;font-style:italic}
+
+/* footer cta */
+.cta{margin-top:2.4rem;border:var(--border);background:var(--ink);color:var(--bg);box-shadow:var(--shadow);padding:1.6rem 1.5rem}
+.cta h3{font-family:var(--font-display);font-weight:800;font-size:1.3rem;margin-bottom:.5rem}
+.cta a{color:var(--yellow);font-weight:700}
+
+.checks{width:100%;border-collapse:collapse;margin:1rem 0}
+.checks td{border-bottom:2px solid #e6e0d6;padding:.55rem .5rem;vertical-align:top;font-size:.95rem}
+.checks td.ok{color:var(--teal);font-weight:800;width:1.6rem;text-align:center}
+.checks td.na{color:#9a9a9a;font-weight:800;width:1.6rem;text-align:center}
+.checks td.op{color:#c98a00;font-weight:800;width:1.6rem;text-align:center}
+.checks td b{font-family:var(--font-display);font-weight:700;white-space:nowrap}
+.checks tr td:nth-child(2){width:9rem}
+.tiernote{font-size:.85rem;color:#7a7a7a;margin:.2rem 0 .8rem}
+</style>
+</head>
+<body><main>
+  <div class="bar">
+    <a class="logo" href="/">les-k<span class="dot">.</span></a>
+    <a class="back" href="/assessments.html">← Assessments</a>
+  </div>
+  <article class="wrap">
+    <span class="tag">Assessment · Security</span>
+    <h1>Assessment: Elasticsearch MCP server</h1>
+    <p class="byline">Leslie Kadenge · a public server I didn't write, read against <a href="/methodology.html">the two-tier method</a></p>
+    <p class="lede">Elastic's MCP server is the only one in this collection written in Rust, and it wears that well: tool annotations are declared inline through a clean macro, and memory-safety-class bugs are off the table by construction. It's a focused, tidy server — and the one place I'd push is depth of testing, which I'll say plainly because a generous review isn't a silent one. Verifiable read.</p>
+    <h2 class="f1">The standout</h2>
+    <div class="f1"><p>The standout is how naturally the annotations sit in the code. Each tool declares its hints inline via a Rust macro — <code>annotations(title = …, read_only_hint = true)</code> right on the tool — so the read tools (list indices, get mappings, search) are marked read-only at the point of definition, hard to forget and easy to audit. Rust also takes an entire class of memory-safety bugs off the table that a review would otherwise have to consider.</p></div>
+    <h2>The method, check by check</h2>
+    <table class="checks"><tr><td class="ok">✓</td><td><b>Annotations</b></td><td>Declared inline per tool via a clean macro; read tools marked read-only at definition.</td></tr><tr><td class="ok">✓</td><td><b>Language safety</b></td><td>Rust removes memory-safety bugs by construction — one fewer class to review.</td></tr><tr><td class="op">⚠</td><td><b>Tests &amp; CI (7)</b></td><td>The honest note: test depth is thin relative to peers. For a search server that mostly reads this is lower-stakes, but the dangerous paths deserve tests that pin them.</td></tr><tr><td class="na">—</td><td><b>Path handling</b></td><td>API-backed; no filesystem surface.</td></tr><tr><td class="op">⚠</td><td><b>Confirmation (8)</b></td><td>Write/index tools rely on the host to gate on the hint; no server-required confirmation.</td></tr><tr><td class="op">⚠</td><td><b>Blast radius (12)</b></td><td>A search server's queries can be expensive; explicit result/size bounds would help.</td></tr></table>
+    <p class="tiernote">✓ present · ⚠ the tier-two hardening still open · — not applicable</p>
+    <h2>Verdict</h2>
+    <p>Clean and well-built where it counts — annotations at the point of definition, and a language that eliminates a whole bug class. The candid part, because a real review says it: test depth is the thinnest in this collection, and the write paths in particular deserve tests that pin them. Sound in design; the hardening to add is coverage and per-action confirmation.</p>
+    <div class="cta">
+      <h3>Want the same read on yours?</h3>
+      <p>The whole server against both tiers, a document you can forward. <a href="/mcp-security.html">How it works</a> · <a href="mailto:lesliekadenge@gmail.com">lesliekadenge@gmail.com</a>.</p>
+    </div>
+    <p class="method">Checkable against github.com/elastic/mcp-server-elasticsearch. Offered in good faith; named for what it does well, with the one honest note raised as a note, not a gotcha.</p>
+  </article>
+</main></body>
+</html>
