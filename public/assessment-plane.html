@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Assessment: Plane MCP server — Leslie Kadenge</title>
+<meta name="description" content="A public, generous security assessment of the Plane MCP server, whose conformance tests make its safety annotations impossible to get wrong." />
+<link rel="icon" href="/favicon.svg" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600;800;900&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet" />
+<style>
+:root{
+  --bg:#fff8f0; --ink:#1a1a2e;
+  --coral:#ff5d5d; --yellow:#ffc839; --purple:#7c5cff; --teal:#2ec4b6; --pink:#ff8fab;
+  --border:3px solid var(--ink);
+  --shadow:6px 6px 0 var(--ink);
+  --shadow-sm:3px 3px 0 var(--ink);
+  --font-display:'Unbounded',sans-serif;
+  --font-body:'Space Grotesk',sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:var(--font-body);font-size:1.05rem;line-height:1.65;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(var(--ink) 1px,transparent 1px);background-size:28px 28px;opacity:.06;pointer-events:none;z-index:0}
+main{position:relative;z-index:1}
+
+/* top bar */
+.bar{position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;
+  padding:.9rem 1.5rem;background:var(--bg);border-bottom:var(--border)}
+.logo{font-family:var(--font-display);font-weight:900;font-size:1.25rem;color:var(--ink);text-decoration:none}
+.logo .dot{color:var(--coral)}
+.back{font-weight:700;text-decoration:none;color:var(--ink);border:var(--border);background:var(--yellow);
+  padding:.4rem .8rem;box-shadow:var(--shadow-sm);transition:transform .1s,box-shadow .1s}
+.back:hover{transform:translate(-2px,-2px);box-shadow:5px 5px 0 var(--ink)}
+
+.wrap{max-width:760px;margin:0 auto;padding:3rem 1.5rem 4rem}
+
+/* header block */
+.tag{display:inline-block;font-family:var(--font-display);font-weight:800;font-size:.72rem;letter-spacing:.08em;
+  text-transform:uppercase;background:var(--purple);color:#fff;border:var(--border);padding:.3rem .7rem;box-shadow:var(--shadow-sm)}
+h1{font-family:var(--font-display);font-weight:900;line-height:1.05;font-size:clamp(2rem,6vw,3.2rem);margin:1.2rem 0 .8rem}
+.byline{font-weight:500;color:#4a4a5e;font-size:1rem}
+.lede{font-size:1.18rem;margin-top:1.6rem}
+
+h2{font-family:var(--font-display);font-weight:800;font-size:clamp(1.3rem,3.5vw,1.7rem);line-height:1.15;
+  margin:2.8rem 0 1rem;padding-bottom:.5rem;border-bottom:var(--border)}
+h2 .n{color:var(--coral)}
+p{margin:1rem 0}
+strong{font-weight:700}
+em{font-style:italic}
+code{font-family:'Space Grotesk',ui-monospace,monospace;background:#fff;border:2px solid var(--ink);
+  border-radius:4px;padding:.05rem .35rem;font-size:.9em;font-weight:500}
+
+/* the servers grid */
+.servers{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:.7rem;margin:1.4rem 0}
+.srv{border:var(--border);background:#fff;box-shadow:var(--shadow-sm);padding:.7rem .8rem}
+.srv b{font-family:var(--font-display);font-weight:700;font-size:.95rem;display:block}
+.srv span{font-size:.85rem;color:#4a4a5e}
+
+/* callout / pull */
+.pull{border:var(--border);background:var(--yellow);box-shadow:var(--shadow);padding:1.2rem 1.3rem;margin:1.6rem 0;
+  font-family:var(--font-display);font-weight:600;font-size:1.15rem;line-height:1.35}
+.note{border:var(--border);background:#fff;box-shadow:var(--shadow-sm);padding:1rem 1.2rem;margin:1.4rem 0;font-size:.98rem}
+.note b{font-family:var(--font-display)}
+
+/* finding accent bars */
+.f1{border-left:10px solid var(--teal);padding-left:1rem}
+.f2{border-left:10px solid var(--purple);padding-left:1rem}
+.f3{border-left:10px solid var(--coral);padding-left:1rem}
+.f4{border-left:10px solid var(--yellow);padding-left:1rem}
+
+.method{margin-top:3rem;padding-top:1.4rem;border-top:var(--border);font-size:.9rem;color:#4a4a5e;font-style:italic}
+
+/* footer cta */
+.cta{margin-top:2.4rem;border:var(--border);background:var(--ink);color:var(--bg);box-shadow:var(--shadow);padding:1.6rem 1.5rem}
+.cta h3{font-family:var(--font-display);font-weight:800;font-size:1.3rem;margin-bottom:.5rem}
+.cta a{color:var(--yellow);font-weight:700}
+</style>
+</head>
+<body><main>
+  <div class="bar">
+    <a class="logo" href="/">les-k<span class="dot">.</span></a>
+    <a class="back" href="/mcp-security.html">← MCP security</a>
+  </div>
+
+  <article class="wrap">
+    <span class="tag">Assessment · Security</span>
+    <h1>Assessment: Plane MCP server</h1>
+    <p class="byline">Leslie Kadenge · a public server I didn't write, read against <a href="/methodology.html">the method</a></p>
+
+    <p class="lede">Plane is open-source project management, and their MCP server lets an agent work a workspace — projects, work items, cycles, comments — including deleting them. What sets it apart isn't that it annotates its tools; plenty do. It's that it makes the annotations <em>impossible to get wrong</em>, with tests that fail the build if the safety metadata ever stops matching what the tools actually do. This is a generous assessment; the server earns it.</p>
+
+    <div class="note"><b>Why it's worth reading even though it's clean.</b> A review's job is to tell a company — and the customer asking them — whether a server is sound and <em>how you can tell</em>. Plane is sound, in a way most servers aren't, and the reason is worth showing.</div>
+
+    <h2 class="f1"><span class="n">1</span> — Tool annotations · <em>derived and checked — the standout</em></h2>
+    <div class="f1">
+    <p>Plane's tools bundle several <em>actions</em> each (a work-item tool that can get, list, search, create, update and delete). Rather than hand-write a hint per tool and hope it stays true, the server <strong>derives</strong> each tool's <code>readOnlyHint</code> and <code>destructiveHint</code> from its actions — and then a conformance test asserts the derivation: <code>readOnlyHint</code> is true only if every action reads, <code>destructiveHint</code> true if any action is destructive. The metadata cannot drift from the behaviour, because a test checks they still agree on every build.</p>
+    </div>
+
+    <h2 class="f2"><span class="n">2</span> — Destructive-operation gating · <em>passes, and enforced by CI</em></h2>
+    <div class="f2">
+    <p>Every delete action is marked <code>destructive=True</code> — and this isn't left to discipline. A test, <code>test_delete_actions_are_marked_destructive</code>, <strong>fails the build</strong> if any action whose name starts with "delete" isn't marked destructive. A companion test does the same for reads. The guarantee isn't "we remembered"; it's "CI won't let us forget", which is the only kind of guarantee that survives a growing team.</p>
+    </div>
+
+    <h2 class="f3"><span class="n">3</span> — Path handling · <em>not applicable</em></h2>
+    <div class="f3"><p>API-backed; no filesystem surface to traverse.</p></div>
+
+    <h2 class="f4"><span class="n">4</span> — Query and injection safety · <em>low surface, handled</em></h2>
+    <div class="f4">
+    <p>Filtering goes through Plane's own query language passed as structured parameters to the API, not raw SQL exposed to the model. No place for a smuggled second statement.</p>
+    </div>
+
+    <h2 class="f1"><span class="n">5</span> — Untrusted content · <em>passes</em></h2>
+    <div class="f1">
+    <p>Tools return the workspace's own project and work-item data over authenticated OAuth, not open-web content. There's a dedicated <code>test_oauth_security.py</code> guarding that boundary — a sign the team treats the auth surface as something to prove, not assume.</p>
+    </div>
+
+    <h2 class="f2"><span class="n">6</span> — Access model · <em>passes</em></h2>
+    <div class="f2">
+    <p>OAuth with a proper provider, secrets pulled from AWS Secrets rather than the environment, stateless HTTP, and a governance layer that reads who owns a resource and whether the workspace's plan even permits an action before attempting it. The agent operates strictly within the authenticated user's workspace and plan.</p>
+    </div>
+
+    <h2 class="f3"><span class="n">7</span> — Tests and CI · <em>passes</em></h2>
+    <div class="f3">
+    <p>Twenty test files, including OAuth security, stateless-HTTP behaviour, argument validation, docs, integration calls, and the conformance suite above. A <code>build-branch</code> workflow runs them. The safety properties are claims with tests behind them.</p>
+    </div>
+
+    <h2 class="f4"><span class="n">8</span> — Claim versus reality · <em>machine-checked</em></h2>
+    <div class="f4">
+    <p>The strongest pass on the list, for the same reason as the annotations: the consistency between what a tool declares and what its actions do is not asserted, it's tested on every build. The docs and the schema are checked to agree (<code>test_action_literal_matches_the_declaration</code>). Reality can't quietly diverge from the claim.</p>
+    </div>
+
+    <h2>One thing a full review would discuss</h2>
+    <p>Not a fault — a design trade-off worth a conversation. Because hints are per-tool and tools bundle actions, a tool that can both read and delete gets <code>destructiveHint = true</code> for the whole tool (correctly, and conservatively). A host that gates strictly on <code>destructiveHint</code> therefore blocks that tool's <em>reads</em> too, not just its delete. That's the cost of the fewer-richer-tools design, against the alternative of many narrow single-action tools. Both are defensible; which is right depends on how Plane's clients actually gate. That conversation — not a bug list — is what the deeper engagement would be.</p>
+
+    <h2>Verdict</h2>
+    <p>Sound, and unusually disciplined about staying that way. Most servers that are safe today are one careless merge from not being; Plane wired the safety properties into CI so a merge can't quietly break them. Reviewed, sound, and here's exactly how I know — with one design question flagged for discussion rather than fix.</p>
+
+    <div class="cta">
+      <h3>Want the same for your server?</h3>
+      <p>Read the whole thing, a test behind every finding, a document you can forward. <a href="/mcp-security.html">How the service works</a> · <a href="mailto:lesliekadenge@gmail.com">lesliekadenge@gmail.com</a>.</p>
+    </div>
+
+    <p class="method">Every claim above is checkable against the public repository at github.com/makeplane/plane-mcp-server. Offered in good faith; the server is named only for what it does well, and the one open question is flagged as a design choice, not a defect.</p>
+  </article>
+</main></body>
+</html>

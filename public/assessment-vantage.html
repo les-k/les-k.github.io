@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Assessment: Vantage MCP server — Leslie Kadenge</title>
+<meta name="description" content="A public, generous security assessment of the Vantage MCP server, whose type-enforced tool annotations are the best I've seen." />
+<link rel="icon" href="/favicon.svg" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600;800;900&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet" />
+<style>
+:root{
+  --bg:#fff8f0; --ink:#1a1a2e;
+  --coral:#ff5d5d; --yellow:#ffc839; --purple:#7c5cff; --teal:#2ec4b6; --pink:#ff8fab;
+  --border:3px solid var(--ink);
+  --shadow:6px 6px 0 var(--ink);
+  --shadow-sm:3px 3px 0 var(--ink);
+  --font-display:'Unbounded',sans-serif;
+  --font-body:'Space Grotesk',sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:var(--font-body);font-size:1.05rem;line-height:1.65;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(var(--ink) 1px,transparent 1px);background-size:28px 28px;opacity:.06;pointer-events:none;z-index:0}
+main{position:relative;z-index:1}
+
+/* top bar */
+.bar{position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;
+  padding:.9rem 1.5rem;background:var(--bg);border-bottom:var(--border)}
+.logo{font-family:var(--font-display);font-weight:900;font-size:1.25rem;color:var(--ink);text-decoration:none}
+.logo .dot{color:var(--coral)}
+.back{font-weight:700;text-decoration:none;color:var(--ink);border:var(--border);background:var(--yellow);
+  padding:.4rem .8rem;box-shadow:var(--shadow-sm);transition:transform .1s,box-shadow .1s}
+.back:hover{transform:translate(-2px,-2px);box-shadow:5px 5px 0 var(--ink)}
+
+.wrap{max-width:760px;margin:0 auto;padding:3rem 1.5rem 4rem}
+
+/* header block */
+.tag{display:inline-block;font-family:var(--font-display);font-weight:800;font-size:.72rem;letter-spacing:.08em;
+  text-transform:uppercase;background:var(--purple);color:#fff;border:var(--border);padding:.3rem .7rem;box-shadow:var(--shadow-sm)}
+h1{font-family:var(--font-display);font-weight:900;line-height:1.05;font-size:clamp(2rem,6vw,3.2rem);margin:1.2rem 0 .8rem}
+.byline{font-weight:500;color:#4a4a5e;font-size:1rem}
+.lede{font-size:1.18rem;margin-top:1.6rem}
+
+h2{font-family:var(--font-display);font-weight:800;font-size:clamp(1.3rem,3.5vw,1.7rem);line-height:1.15;
+  margin:2.8rem 0 1rem;padding-bottom:.5rem;border-bottom:var(--border)}
+h2 .n{color:var(--coral)}
+p{margin:1rem 0}
+strong{font-weight:700}
+em{font-style:italic}
+code{font-family:'Space Grotesk',ui-monospace,monospace;background:#fff;border:2px solid var(--ink);
+  border-radius:4px;padding:.05rem .35rem;font-size:.9em;font-weight:500}
+
+/* the servers grid */
+.servers{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:.7rem;margin:1.4rem 0}
+.srv{border:var(--border);background:#fff;box-shadow:var(--shadow-sm);padding:.7rem .8rem}
+.srv b{font-family:var(--font-display);font-weight:700;font-size:.95rem;display:block}
+.srv span{font-size:.85rem;color:#4a4a5e}
+
+/* callout / pull */
+.pull{border:var(--border);background:var(--yellow);box-shadow:var(--shadow);padding:1.2rem 1.3rem;margin:1.6rem 0;
+  font-family:var(--font-display);font-weight:600;font-size:1.15rem;line-height:1.35}
+.note{border:var(--border);background:#fff;box-shadow:var(--shadow-sm);padding:1rem 1.2rem;margin:1.4rem 0;font-size:.98rem}
+.note b{font-family:var(--font-display)}
+
+/* finding accent bars */
+.f1{border-left:10px solid var(--teal);padding-left:1rem}
+.f2{border-left:10px solid var(--purple);padding-left:1rem}
+.f3{border-left:10px solid var(--coral);padding-left:1rem}
+.f4{border-left:10px solid var(--yellow);padding-left:1rem}
+
+.method{margin-top:3rem;padding-top:1.4rem;border-top:var(--border);font-size:.9rem;color:#4a4a5e;font-style:italic}
+
+/* footer cta */
+.cta{margin-top:2.4rem;border:var(--border);background:var(--ink);color:var(--bg);box-shadow:var(--shadow);padding:1.6rem 1.5rem}
+.cta h3{font-family:var(--font-display);font-weight:800;font-size:1.3rem;margin-bottom:.5rem}
+.cta a{color:var(--yellow);font-weight:700}
+</style>
+</head>
+<body><main>
+  <div class="bar">
+    <a class="logo" href="/">les-k<span class="dot">.</span></a>
+    <a class="back" href="/mcp-security.html">← MCP security</a>
+  </div>
+
+  <article class="wrap">
+    <span class="tag">Assessment · Security</span>
+    <h1>Assessment: Vantage MCP server</h1>
+    <p class="byline">Leslie Kadenge · a public server I didn't write, read against <a href="/methodology.html">the method</a></p>
+
+    <p class="lede">Vantage builds cloud-cost management, and their MCP server exposes it to AI agents — 127 tools across cost reports, budgets, anomalies, and the accounts behind them. I read it because assessing code you didn't write is the actual job, and because it does one thing better than any of the thirteen servers in the <a href="/field-notes.html">field notes</a>. This is a generous assessment: the server earns it.</p>
+
+    <div class="note"><b>Why it's worth reading even though it's clean.</b> The point of a review is not only to find faults — it's to tell a company, and its customers, whether the server is sound and to say <em>how you know</em>. Vantage is sound. Here is how I know, check by check.</div>
+
+    <h2 class="f1"><span class="n">1</span> — Tool annotations · <em>exemplary — the standout</em></h2>
+    <div class="f1">
+    <p>This is the best annotation discipline I've seen in an MCP server, and it isn't close. All 127 tools are registered through a single wrapper whose TypeScript type makes the three hints — <code>readOnly</code>, <code>openWorld</code>, <code>destructive</code> — <strong>non-optional</strong>. You cannot add a tool to this codebase without declaring all three; the compiler refuses. The wrapper then maps them to the wire hints (<code>readOnlyHint</code>, <code>openWorldHint</code>, <code>destructiveHint</code>) in one place. 39 tools are declared destructive, and not one tool is missing its block.</p>
+    <p>Most servers rely on a maintainer remembering to annotate. Vantage made forgetting a compile error. That is the correct way to solve it.</p>
+    </div>
+
+    <h2 class="f2"><span class="n">2</span> — Destructive-operation gating · <em>passes</em></h2>
+    <div class="f2">
+    <p>Every deleting tool — <code>delete-cost-report</code>, <code>delete-budget</code>, and the rest — carries <code>destructive: true</code> and says "This action is irreversible" in its own description. That is exactly what a host needs to gate them: the server labels the danger honestly and correctly, leaving the client free to require confirmation. A server can't force a host to prompt; it can make sure the host has the information to, and this one does.</p>
+    </div>
+
+    <h2 class="f3"><span class="n">3</span> — Path handling · <em>not applicable</em></h2>
+    <div class="f3"><p>No filesystem surface — every tool is backed by the Vantage API. Nothing to traverse.</p></div>
+
+    <h2 class="f4"><span class="n">4</span> — Query and injection safety · <em>low surface, handled</em></h2>
+    <div class="f4">
+    <p>The query tools (<code>query-costs</code>, <code>query-network-flow-logs</code>) pass structured parameters to the Vantage API rather than exposing raw SQL to the model, so there's no query string for an agent to smuggle a second statement into. The injection surface a database server has to defend simply isn't present here.</p>
+    </div>
+
+    <h2 class="f1"><span class="n">5</span> — Untrusted content · <em>passes</em></h2>
+    <div class="f1">
+    <p>Tools return the user's own cost and usage data from their connected cloud accounts, through an authenticated API — not arbitrary text from the open web. The prompt-injection path that worries me on a web-reading server is narrow here, and <code>openWorld</code> is declared per tool regardless, so a host is told what to trust.</p>
+    </div>
+
+    <h2 class="f2"><span class="n">6</span> — Access model · <em>passes</em></h2>
+    <div class="f2">
+    <p>Authenticated by the user's own Vantage token; every tool is scoped to whatever that token can already see, so the server grants no reach the user didn't already have. It runs on a Cloudflare Worker with per-tool request tracing, which also means an audit trail of what the agent did.</p>
+    </div>
+
+    <h2 class="f3"><span class="n">7</span> — Tests and CI · <em>passes</em></h2>
+    <div class="f3">
+    <p>134 test files, a <code>test.yml</code> CI workflow, Biome for linting, and separate staging and production deploy workflows. This is not a project where the guard rails are hoped for; they're run.</p>
+    </div>
+
+    <h2 class="f4"><span class="n">8</span> — Claim versus reality · <em>guaranteed, not asserted</em></h2>
+    <div class="f4">
+    <p>The check that ties it together. On most servers "every tool is annotated" is a claim you verify by reading. Here it's enforced by the type system — the property can't be false, because code that violated it wouldn't compile. That is the strongest form this check can pass: not a promise in a README, a guarantee in the build.</p>
+    </div>
+
+    <h2>Verdict</h2>
+    <p>If someone asks me what good looks like for MCP tool annotations, this is the answer I point to. Nothing in the checklist needs fixing; a full engagement would spend its time on the auth and transport edges rather than the tool surface, because the tool surface is already exemplary. Reviewed, sound, and here's how I know — which is the document a company can hand to a customer asking who checked.</p>
+
+    <div class="cta">
+      <h3>Want the same for your server?</h3>
+      <p>Read the whole thing, a test behind every finding, a document you can forward. <a href="/mcp-security.html">How the service works</a> · <a href="mailto:lesliekadenge@gmail.com">lesliekadenge@gmail.com</a>.</p>
+    </div>
+
+    <p class="method">Every claim above is checkable against the public repository at github.com/vantage-sh/vantage-mcp-server. This assessment is offered in good faith and names the server only for what it does well.</p>
+  </article>
+</main></body>
+</html>
