@@ -132,8 +132,15 @@ code{font-family:'Space Grotesk',ui-monospace,monospace;background:#fff;border:2
     <p>The check that ties it together. On most servers "every tool is annotated" is a claim you verify by reading. Here it's enforced by the type system — the property can't be false, because code that violated it wouldn't compile. That is the strongest form this check can pass: not a promise in a README, a guarantee in the build.</p>
     </div>
 
+    <h2>Tier two — the hardening not yet present</h2>
+    <div class="f1"><p>Vantage is about as good as it gets on the basics. <a href="/methodology.html">Tier two</a> is where even it has room — and where almost every server does, because this is the frontier of a protocol barely a year old.</p></div>
+    <div class="f2"><p><strong>Confirmation (8) · not yet.</strong> Destructive tools are labelled honestly, but the server doesn't itself require a confirmation before a delete — it trusts the host to notice the hint and prompt. Correct as far as the spec long required; the elicitation step added in 2026-07-28 would let the server insist rather than trust.</p></div>
+    <div class="f3"><p><strong>Read-only mode (11 · defense in depth) · not present.</strong> Access is scoped to the user's token, but there's no server-side read-only switch to keep an agent off the mutating tools entirely — the kind of second layer that protects against a host that gates poorly.</p></div>
+    <div class="f4"><p><strong>Blast radius (12) · deferred to the API.</strong> Delete tools remove one resource by token; bulk and rate limits rest on the Vantage API rather than the server. Reasonable, but a review would confirm the API actually bounds it.</p></div>
+    <div class="f1"><p>Checks 9 and 10 — approval-replay and re-validation — barely apply: the server keeps no approval state to replay, and every call hits the live API, so there's no stale scan to exploit.</p></div>
+
     <h2>Verdict</h2>
-    <p>If someone asks me what good looks like for MCP tool annotations, this is the answer I point to. Nothing in the checklist needs fixing; a full engagement would spend its time on the auth and transport edges rather than the tool surface, because the tool surface is already exemplary. Reviewed, sound, and here's how I know — which is the document a company can hand to a customer asking who checked.</p>
+    <p>If someone asks what good looks like for MCP tool annotations, this is the answer I point to — the tier-one surface is exemplary, the annotation completeness compiler-guaranteed. What's left is tier two: the server labels its destructive tools but doesn't yet require confirmation before them, and offers no read-only mode as a second layer. That's not a flaw so much as the next frontier, and it's exactly what a review would help add. Reviewed, sound on the basics, and honest about the hardening still ahead — the document a company can hand to a customer asking who checked.</p>
 
     <div class="cta">
       <h3>Want the same for your server?</h3>

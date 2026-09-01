@@ -131,6 +131,12 @@ code{font-family:'Space Grotesk',ui-monospace,monospace;background:#fff;border:2
     <p>The strongest pass on the list, for the same reason as the annotations: the consistency between what a tool declares and what its actions do is not asserted, it's tested on every build. The docs and the schema are checked to agree (<code>test_action_literal_matches_the_declaration</code>). Reality can't quietly diverge from the claim.</p>
     </div>
 
+    <h2>Tier two — the hardening</h2>
+    <div class="f1"><p>Plane does better on <a href="/methodology.html">tier two</a> than most, thanks to its governance layer — and still hasn't reached all of it.</p></div>
+    <div class="f2"><p><strong>Confirmation (8) · not yet.</strong> Delete actions are marked destructive and the marking is CI-enforced, but the server doesn't require an explicit confirmation before acting — the same elicitation gap almost every server has.</p></div>
+    <div class="f3"><p><strong>Re-validation &amp; depth (10, 11) · a genuine strength.</strong> The governance layer checks resource ownership and whether the workspace's plan even permits an action <em>before</em> attempting it — an action-time check and a real second layer beyond authentication, which most servers lack entirely.</p></div>
+    <div class="f4"><p><strong>Approval-replay and blast radius (9, 12) · open.</strong> No consume-on-use approval flow, and bulk and rate limits rest on the Plane API rather than the server — the same frontier items as its peers.</p></div>
+
     <h2>One thing a full review would discuss</h2>
     <p>Not a fault — a design trade-off worth a conversation. Because hints are per-tool and tools bundle actions, a tool that can both read and delete gets <code>destructiveHint = true</code> for the whole tool (correctly, and conservatively). A host that gates strictly on <code>destructiveHint</code> therefore blocks that tool's <em>reads</em> too, not just its delete. That's the cost of the fewer-richer-tools design, against the alternative of many narrow single-action tools. Both are defensible; which is right depends on how Plane's clients actually gate. That conversation — not a bug list — is what the deeper engagement would be.</p>
 

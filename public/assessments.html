@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>MCP server assessments — Leslie Kadenge</title>
-<meta name="description" content="Full security assessments of MCP servers against an eight-point method — my own and others', each checkable against the source." />
+<meta name="description" content="Full security assessments of MCP servers against a two-tier method — my own and others', each checkable against the source." />
 <link rel="icon" href="/favicon.svg" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -95,11 +95,11 @@ code{font-family:'Space Grotesk',ui-monospace,monospace;background:#fff;border:2
     <h1>MCP server assessments</h1>
     <p class="byline">Leslie Kadenge · full reviews against <a href="/methodology.html">the method</a>, each one checkable against the source</p>
 
-    <p class="lede">Each of these runs one MCP server through the same eight-point method and writes up what it found — a worked example of exactly what a paid review produces. They're split deliberately: the ones on my own code show I find and fix real bugs; the ones on code I didn't write show the part that's the actual service — reading someone else's server and telling them, honestly, where it stands.</p>
+    <p class="lede">Each of these runs one MCP server through the same two-tier method and writes up what it found — a worked example of exactly what a paid review produces. They're split deliberately: the ones on my own code show I find and fix real bugs; the ones on code I didn't write show the part that's the actual service — reading someone else's server and telling them, honestly, where it stands.</p>
 
     <h2>My own servers</h2>
     <p>Where I can be hardest, and show the bugs as well as the fixes.</p>
-    <a href="/assessment-sweep-mcp.html" class="worklink"><div class="wl"><b>sweep-mcp — a file-deletion server</b><span>Seven checks pass; the eighth shows a real path-handling bug it had (a symlink check that ran after the path resolved through the link), how it was caught, and the two-line fix with a test behind it.</span></div></a>
+    <a href="/assessment-sweep-mcp.html" class="worklink"><div class="wl"><b>sweep-mcp — a file-deletion server</b><span>Strong across the basics; the assessment shows a real path-handling bug it had (a symlink check that ran after the path resolved through the link), how it was caught, and the two-line fix with a test behind it.</span></div></a>
 
     <h2>Servers I didn't write</h2>
     <p>The actual job — reading code that isn't mine, generously and in good faith. Both are named only for what they do well, and everything is checkable against their public repos.</p>

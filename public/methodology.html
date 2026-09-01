@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>How I review an MCP server — Leslie Kadenge</title>
-<meta name="description" content="The eight-point method behind every MCP security assessment I publish or am paid for." />
+<meta name="description" content="The method behind every MCP security review: a basics tier most good servers pass, and a hardening tier almost none have — where the real findings are." />
 <link rel="icon" href="/favicon.svg" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -78,11 +78,10 @@ code{font-family:'Space Grotesk',ui-monospace,monospace;background:#fff;border:2
 .cta a{color:var(--yellow);font-weight:700}
 </style>
 </head>
-<body>
-<main>
+<body><main>
   <div class="bar">
     <a class="logo" href="/">les-k<span class="dot">.</span></a>
-    <a class="back" href="/">← back to site</a>
+    <a class="back" href="/mcp-security.html">← MCP security</a>
   </div>
 
   <article class="wrap">
@@ -90,64 +89,54 @@ code{font-family:'Space Grotesk',ui-monospace,monospace;background:#fff;border:2
     <h1>How I review an MCP server</h1>
     <p class="byline">Leslie Kadenge · the standard, applied the same way every time</p>
 
-    <p class="lede">This is the checklist behind every assessment I publish and every review I'm paid for. It's here in the open for one reason: a review is only worth anything if you can see what it looked for. A grade with no method behind it is a number; a method you can read is a standard.</p>
+    <p class="lede">This is the checklist behind every assessment I publish and every review I'm paid for. It's in the open because a review is only worth something if you can see what it looked for — a grade with no method behind it is a number; a method you can read is a standard.</p>
 
-    <p>An MCP server is a program that hands an AI model the keys to something real — a database, a filesystem, a cloud account, a web session. The questions below are the ones that decide whether those keys can be misused, and every one is answered by reading the code and running it, not by pattern-matching the source. Where a check can be settled by executing the thing rather than trusting a comment, I execute it.</p>
+    <p>It runs in two tiers. The first is the basics — the things a serious MCP server now gets right, and most of the good ones do. The second is the hardening: a set of checks, all grounded in the current spec, that <em>almost nobody has done yet</em>, including servers that are excellent on the basics. That second tier is where a review earns its keep, and it's the honest reason a well-built server still comes back with findings. They aren't nitpicks. They're the difference between a server that <em>declares</em> itself safe and one that <em>stays</em> safe under a determined agent.</p>
 
-    <h2>The one rule everything rests on</h2>
     <div class="pull">A safety property you can only read in a README is not a safety property. The ones that count are the ones a machine enforces or a test proves.</div>
-    <p>Every check below is really the same question asked eight ways: <em>is this guarantee something the code makes true, or something the docs merely claim?</em></p>
 
-    <h2 class="f1"><span class="n">1</span> — Tool annotations</h2>
-    <div class="f1">
-    <p>Does every tool declare <code>readOnlyHint</code>, <code>destructiveHint</code> and <code>openWorldHint</code>, and are they correct? These are the only machine-readable way a client can know which tools are safe to run unattended and which need gating. A destructive tool with no <code>destructiveHint</code> is a delete a host cannot see coming. I check coverage across <em>every</em> tool, not a sample — and whether the annotations match what the tool actually does.</p>
-    </div>
+    <h2>Tier one — the basics</h2>
+    <p>Necessary, and increasingly common. A server that misses these isn't early, it's behind.</p>
 
-    <h2 class="f2"><span class="n">2</span> — Destructive-operation gating</h2>
-    <div class="f2">
-    <p>For anything that deletes, writes, sends or spends: is there a confirmation step at all? Is the dangerous path a dry run by default? And — the one most servers miss — can the same approval be spent twice? The SDK binds and expires approval state but does not consume it; closing that gap is the server's job, not the SDK's.</p>
-    </div>
+    <div class="f1"><p><strong>1 · Tool annotations.</strong> Does every tool declare <code>readOnlyHint</code>, <code>destructiveHint</code>, <code>openWorldHint</code> — correctly? It's the only machine-readable way a client knows what's safe to run unattended.</p></div>
+    <div class="f2"><p><strong>2 · Destructive operations labelled.</strong> Is everything that deletes, writes, sends or spends marked destructive, so a host <em>can</em> gate it?</p></div>
+    <div class="f3"><p><strong>3 · Path handling.</strong> A root allowlist that denies by default; a symlink check <em>before</em> the path resolves, not after; identifiers rather than raw paths.</p></div>
+    <div class="f4"><p><strong>4 · Query safety.</strong> Is "read-only" enforced by <em>parsing</em> the SQL, not pattern-matching it? Multiple statements refused? Writes-in-a-CTE caught?</p></div>
+    <div class="f1"><p><strong>5 · Untrusted content.</strong> Does content read from the web, a database or disk come back marked untrusted, or arrive in the same channel as the user's instructions?</p></div>
+    <div class="f2"><p><strong>6 · Access model.</strong> Least privilege: the agent doesn't choose its own scope, and an empty configuration denies everything rather than defaulting to the world.</p></div>
+    <div class="f3"><p><strong>7 · Tests &amp; CI.</strong> A test behind each dangerous path, and CI actually running them. A guard with no CI is one careless merge from gone.</p></div>
 
-    <h2 class="f3"><span class="n">3</span> — Path handling</h2>
-    <div class="f3">
-    <p>The classic file-write bug: a tool takes a caller-supplied path, resolves it, and acts — without checking the result stayed inside an allowed directory. I look for four things: a root allowlist that denies by default; a symlink check that runs <em>before</em> the path is resolved, not after (resolving first inspects where the link points, not the link); a re-check at the moment of the destructive action, not trust in a stale scan; and identifiers rather than raw paths where possible.</p>
-    </div>
+    <h2>Tier two — the hardening almost nobody has done</h2>
+    <p>This is the frontier. Each is real, each is in the spec or the SDK's own gaps, and each is missing from the large majority of servers I read — good ones included. Finding these is the point of paying someone to look.</p>
 
-    <h2 class="f4"><span class="n">4</span> — Query and injection safety</h2>
     <div class="f4">
-    <p>For database and query tools: is "read-only" enforced by <em>parsing</em> the SQL or by pattern-matching it? Are multiple statements accepted (<code>SELECT 1; DROP …</code>)? Can a write hide in a CTE? Does the database login <em>also</em> lack write permission, as a second layer? Pattern-matching a query is not the same as understanding it, and the gap between the two is where the bypass lives.</p>
+    <p><strong>8 · Confirmation, not just a label.</strong> A <code>destructiveHint</code> <em>warns</em> that a tool deletes; it doesn't <em>stop</em> it. The 2026-07-28 spec added elicitation so a server can require an explicit confirmation before it acts. Almost no server uses it — most rely on the host to notice the hint and prompt, which most hosts don't.</p>
     </div>
-
-    <h2 class="f1"><span class="n">5</span> — Untrusted content</h2>
     <div class="f1">
-    <p>Servers that read the open web, a database, or the filesystem pull in content their user did not write. Does that content flow back into the model's context marked as untrusted, or does a web page's text arrive in the same channel as the user's instructions? On a tool whose whole purpose is reading things you don't control, <code>openWorldHint</code> is the difference between the host treating a result as data and treating it as a command.</p>
+    <p><strong>9 · Approval that can't be replayed.</strong> If a server has a confirm/approve step, is the approval <em>consumed</em> when it's used, or can the same token authorise a second action? The SDK binds and expires approval state but does not consume it — closing that gap is the server's job, and one most haven't.</p>
     </div>
-
-    <h2 class="f2"><span class="n">6</span> — The access model</h2>
     <div class="f2">
-    <p>Least privilege, checked at the design level. Does the agent choose the scope — the roots, the database, the account — or is that fixed when the server starts? Does an empty or missing configuration deny everything, or default to the whole world? A misconfigured server should be useless, not dangerous.</p>
+    <p><strong>10 · Re-validation at the moment of action.</strong> Is a target re-checked against the filesystem or database at the instant of the destructive act, or trusted from an earlier scan? The gap between scanning and acting — with an agent thinking in between — is where a directory becomes a symlink and a safe target becomes a dangerous one.</p>
     </div>
-
-    <h2 class="f3"><span class="n">7</span> — Tests and CI</h2>
     <div class="f3">
-    <p>Every safety property above is a claim. A claim without a test is a hope. I look for a test behind each dangerous path — and, just as important, whether CI actually runs them on every commit. A careful guard with no CI is one careless merge away from being gone, and nobody would know.</p>
+    <p><strong>11 · Defense in depth.</strong> When the first guard fails, is there a second? A read-only SQL guard backed by a database login that <em>also</em> lacks write permission; a path allowlist backed by a sandbox. One layer is a single point of failure however careful it is.</p>
+    </div>
+    <div class="f4">
+    <p><strong>12 · Blast radius.</strong> Are expensive or bulk-destructive operations bounded — a dry-run default, a cap on how much one call can delete or spend — or can a single tool call do unlimited damage if the model gets it wrong?</p>
     </div>
 
-    <h2 class="f4"><span class="n">8</span> — Claim versus reality</h2>
-    <div class="f4">
-    <p>Finally, the whole thing read against its own README. Where the docs promise "read-only" or "safe by default", is that enforced, or asserted? Is there a full write path sitting unused in the codebase, one wired-up call from making the promise false? This is the check that ties the other seven together: the distance between what the server says about itself and what its code makes true.</p>
-    </div>
+    <h2>What this means for a review</h2>
+    <p>Most serious servers pass tier one. Almost none pass all of tier two — which is not a criticism, it's the state of a protocol that's barely a year old and moving fast. So an honest assessment of a good server reads like this: <em>excellent on the basics, and here is the specific hardening it hasn't reached yet.</em> That gap is exactly what a review exists to find and close — and it's the thing an enterprise customer's security team is starting to ask about.</p>
 
     <h2>What you get</h2>
-    <p>A paid review runs every one of these against the whole server and writes up what it finds — each finding with a test that proves it, and each safe area noted as checked rather than skipped. The result is a document you can forward to whoever asked whether anyone had looked: an enterprise customer's security team, a compliance reviewer, a partner's vendor questionnaire.</p>
+    <p>A paid review runs both tiers against the whole server and writes up what it finds — each finding with a test that proves it, each safe area noted as checked rather than skipped. A document you can forward to whoever asked whether anyone had looked.</p>
 
     <div class="cta">
       <h3>See it applied.</h3>
-      <p>The <a href="/field-notes.html">field notes</a> run this method across thirteen production servers. The individual assessments — starting with a hard look at <a href="/assessment-sweep-mcp.html">my own file-deletion server</a> — show it in full on one server at a time. For a review of yours: <a href="mailto:lesliekadenge@gmail.com">lesliekadenge@gmail.com</a>.</p>
+      <p>The <a href="/field-notes.html">field notes</a> run this across thirteen servers; the <a href="/assessments.html">assessments</a> apply it one server at a time, mine and others'. For a review of yours: <a href="mailto:lesliekadenge@gmail.com">lesliekadenge@gmail.com</a>.</p>
     </div>
 
-    <p class="method">This checklist evolves as the protocol does — the MCP spec added elicitation for destructive confirmation in 2026, and annotation expectations have hardened over the year. The version here reflects the 2026-07-28 spec. Corrections and additions welcome.</p>
+    <p class="method">The method tracks the protocol — the 2026-07-28 spec's elicitation reshaped the confirmation checks, and the annotation expectations hardened over the year. Corrections and additions welcome.</p>
   </article>
-</main>
-</body>
+</main></body>
 </html>

@@ -90,7 +90,7 @@ code{font-family:'Space Grotesk',ui-monospace,monospace;background:#fff;border:2
     <h1>Assessment: sweep-mcp</h1>
     <p class="byline">Leslie Kadenge · a full review of my own file-deletion server, against <a href="/methodology.html">the method</a></p>
 
-    <p class="lede">I'll start with my own code, and I'll be harder on it than on anyone else's. sweep-mcp is a server that lets an AI delete directories to reclaim disk space — which makes it exactly the kind of tool a review exists for, because the failure mode is a model deleting the wrong thing. Here's the whole server run against the eight checks, including the one place it was wrong and how that was caught.</p>
+    <p class="lede">I'll start with my own code, and I'll be harder on it than on anyone else's. sweep-mcp is a server that lets an AI delete directories to reclaim disk space — which makes it exactly the kind of tool a review exists for, because the failure mode is a model deleting the wrong thing. Here's the whole server run against the method — both tiers — including the one place it was wrong and how that was caught, and the tier-two hardening it still hasn't reached.</p>
 
     <div class="note"><b>What it does.</b> Three tools: <code>list_targets</code> (read-only), <code>scan</code> (read-only, finds reclaimable directories and issues an id for each), and <code>reclaim</code> (deletes, but only directories a prior scan found, named by id, never by path). All the dangerous logic lives in one file — <code>guard.py</code> — that imports no MCP at all, so the rules can be tested without a client in the loop.</p></div>
 
@@ -137,12 +137,20 @@ code{font-family:'Space Grotesk',ui-monospace,monospace;background:#fff;border:2
     <p>The README's promise — deletes only what a marker file proves can be regenerated, only inside configured roots, only by id — is enforced in code and proven by tests, not asserted in prose. There is no unused write path waiting to be wired up; the only thing that deletes is the one tool declared to.</p>
     </div>
 
+    <h2>Tier two — the hardening</h2>
+    <div class="f1"><p>Where <a href="/methodology.html">the method</a> gets demanding, sweep-mcp does better than most — and still isn't finished, which is the honest state of every server I've read.</p></div>
+    <div class="f2"><p><strong>Confirmation (8) · partial.</strong> <code>reclaim</code> is a dry run unless a confirmation phrase is passed, so there is a real gate — but through a tool parameter, not the spec's elicitation. For a CLI-adjacent server that's a defensible choice; a host-driven elicitation prompt would be stronger.</p></div>
+    <div class="f3"><p><strong>Non-replayable authorization (9) · passes.</strong> What authorises a delete is a one-time id, and an id cannot be redeemed twice — a test proves it. The confirmation phrase is a shared constant, but the per-action authorisation is single-use.</p></div>
+    <div class="f4"><p><strong>Re-validation at action time (10) · passes — its strongest point.</strong> Every find is re-checked against the filesystem at the moment of deletion. That is the fix at the heart of this assessment.</p></div>
+    <div class="f1"><p><strong>Defense in depth (11) · passes.</strong> Four independent layers must all agree before anything is deleted: the root allowlist, the id, the re-validation, and a marker file proving the directory is regenerable.</p></div>
+    <div class="f2"><p><strong>Blast radius (12) · the open item.</strong> A single <code>reclaim</code> call deletes every id it's given, with no explicit cap on how many. It's bounded in practice by what a scan found, but an upper limit — and a per-call size ceiling — would bound what a confused agent could do in one shot. This is the tier-two item I'd add to my own server.</p></div>
+
     <h2>Verdict</h2>
-    <p>Sound, and honest about the one place it wasn't. Seven checks pass cleanly; the eighth passes now and shows exactly how a real path-handling bug looks, gets caught, and gets closed with a test. That's the shape of every assessment I do — including the ones where the code isn't mine and the finding isn't already fixed.</p>
+    <p>Sound on the basics, honest about the one place it wasn't, and honest that even it hasn't finished tier two. Every tier-one check passes; the path-handling one shows exactly how a real bug looks, gets caught, and gets closed with a test; and tier two is candid — strong on re-validation and depth, with blast-radius limits still open. That's the shape of every assessment I do: what's excellent, and what's left to harden — including on my own code.</p>
 
     <div class="cta">
       <h3>This is what a review looks like.</h3>
-      <p>Run against <a href="/methodology.html">the same eight checks</a>, every server, every time. Want yours read this way? <a href="mailto:lesliekadenge@gmail.com">lesliekadenge@gmail.com</a> — or see the <a href="/field-notes.html">field notes</a> for the state of thirteen production servers.</p>
+      <p>Run against <a href="/methodology.html">the same method, both tiers</a>, every server, every time. Want yours read this way? <a href="mailto:lesliekadenge@gmail.com">lesliekadenge@gmail.com</a> — or see the <a href="/field-notes.html">field notes</a> for the state of thirteen production servers.</p>
     </div>
 
     <p class="method">sweep-mcp is open source at github.com/les-k/sweep-mcp — every claim above is checkable against the source and the commit history in a few minutes, which is the only kind of assessment worth publishing.</p>
