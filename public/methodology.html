@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>How I review an MCP server — Leslie Kadenge</title>
+<meta name="description" content="The eight-point method behind every MCP security assessment I publish or am paid for." />
+<link rel="icon" href="/favicon.svg" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600;800;900&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet" />
+<style>
+:root{
+  --bg:#fff8f0; --ink:#1a1a2e;
+  --coral:#ff5d5d; --yellow:#ffc839; --purple:#7c5cff; --teal:#2ec4b6; --pink:#ff8fab;
+  --border:3px solid var(--ink);
+  --shadow:6px 6px 0 var(--ink);
+  --shadow-sm:3px 3px 0 var(--ink);
+  --font-display:'Unbounded',sans-serif;
+  --font-body:'Space Grotesk',sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:var(--font-body);font-size:1.05rem;line-height:1.65;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(var(--ink) 1px,transparent 1px);background-size:28px 28px;opacity:.06;pointer-events:none;z-index:0}
+main{position:relative;z-index:1}
+
+/* top bar */
+.bar{position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;
+  padding:.9rem 1.5rem;background:var(--bg);border-bottom:var(--border)}
+.logo{font-family:var(--font-display);font-weight:900;font-size:1.25rem;color:var(--ink);text-decoration:none}
+.logo .dot{color:var(--coral)}
+.back{font-weight:700;text-decoration:none;color:var(--ink);border:var(--border);background:var(--yellow);
+  padding:.4rem .8rem;box-shadow:var(--shadow-sm);transition:transform .1s,box-shadow .1s}
+.back:hover{transform:translate(-2px,-2px);box-shadow:5px 5px 0 var(--ink)}
+
+.wrap{max-width:760px;margin:0 auto;padding:3rem 1.5rem 4rem}
+
+/* header block */
+.tag{display:inline-block;font-family:var(--font-display);font-weight:800;font-size:.72rem;letter-spacing:.08em;
+  text-transform:uppercase;background:var(--purple);color:#fff;border:var(--border);padding:.3rem .7rem;box-shadow:var(--shadow-sm)}
+h1{font-family:var(--font-display);font-weight:900;line-height:1.05;font-size:clamp(2rem,6vw,3.2rem);margin:1.2rem 0 .8rem}
+.byline{font-weight:500;color:#4a4a5e;font-size:1rem}
+.lede{font-size:1.18rem;margin-top:1.6rem}
+
+h2{font-family:var(--font-display);font-weight:800;font-size:clamp(1.3rem,3.5vw,1.7rem);line-height:1.15;
+  margin:2.8rem 0 1rem;padding-bottom:.5rem;border-bottom:var(--border)}
+h2 .n{color:var(--coral)}
+p{margin:1rem 0}
+strong{font-weight:700}
+em{font-style:italic}
+code{font-family:'Space Grotesk',ui-monospace,monospace;background:#fff;border:2px solid var(--ink);
+  border-radius:4px;padding:.05rem .35rem;font-size:.9em;font-weight:500}
+
+/* the servers grid */
+.servers{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:.7rem;margin:1.4rem 0}
+.srv{border:var(--border);background:#fff;box-shadow:var(--shadow-sm);padding:.7rem .8rem}
+.srv b{font-family:var(--font-display);font-weight:700;font-size:.95rem;display:block}
+.srv span{font-size:.85rem;color:#4a4a5e}
+
+/* callout / pull */
+.pull{border:var(--border);background:var(--yellow);box-shadow:var(--shadow);padding:1.2rem 1.3rem;margin:1.6rem 0;
+  font-family:var(--font-display);font-weight:600;font-size:1.15rem;line-height:1.35}
+.note{border:var(--border);background:#fff;box-shadow:var(--shadow-sm);padding:1rem 1.2rem;margin:1.4rem 0;font-size:.98rem}
+.note b{font-family:var(--font-display)}
+
+/* finding accent bars */
+.f1{border-left:10px solid var(--teal);padding-left:1rem}
+.f2{border-left:10px solid var(--purple);padding-left:1rem}
+.f3{border-left:10px solid var(--coral);padding-left:1rem}
+.f4{border-left:10px solid var(--yellow);padding-left:1rem}
+
+.method{margin-top:3rem;padding-top:1.4rem;border-top:var(--border);font-size:.9rem;color:#4a4a5e;font-style:italic}
+
+/* footer cta */
+.cta{margin-top:2.4rem;border:var(--border);background:var(--ink);color:var(--bg);box-shadow:var(--shadow);padding:1.6rem 1.5rem}
+.cta h3{font-family:var(--font-display);font-weight:800;font-size:1.3rem;margin-bottom:.5rem}
+.cta a{color:var(--yellow);font-weight:700}
+</style>
+</head>
+<body>
+<main>
+  <div class="bar">
+    <a class="logo" href="/">les-k<span class="dot">.</span></a>
+    <a class="back" href="/">← back to site</a>
+  </div>
+
+  <article class="wrap">
+    <span class="tag">Method · Security</span>
+    <h1>How I review an MCP server</h1>
+    <p class="byline">Leslie Kadenge · the standard, applied the same way every time</p>
+
+    <p class="lede">This is the checklist behind every assessment I publish and every review I'm paid for. It's here in the open for one reason: a review is only worth anything if you can see what it looked for. A grade with no method behind it is a number; a method you can read is a standard.</p>
+
+    <p>An MCP server is a program that hands an AI model the keys to something real — a database, a filesystem, a cloud account, a web session. The questions below are the ones that decide whether those keys can be misused, and every one is answered by reading the code and running it, not by pattern-matching the source. Where a check can be settled by executing the thing rather than trusting a comment, I execute it.</p>
+
+    <h2>The one rule everything rests on</h2>
+    <div class="pull">A safety property you can only read in a README is not a safety property. The ones that count are the ones a machine enforces or a test proves.</div>
+    <p>Every check below is really the same question asked eight ways: <em>is this guarantee something the code makes true, or something the docs merely claim?</em></p>
+
+    <h2 class="f1"><span class="n">1</span> — Tool annotations</h2>
+    <div class="f1">
+    <p>Does every tool declare <code>readOnlyHint</code>, <code>destructiveHint</code> and <code>openWorldHint</code>, and are they correct? These are the only machine-readable way a client can know which tools are safe to run unattended and which need gating. A destructive tool with no <code>destructiveHint</code> is a delete a host cannot see coming. I check coverage across <em>every</em> tool, not a sample — and whether the annotations match what the tool actually does.</p>
+    </div>
+
+    <h2 class="f2"><span class="n">2</span> — Destructive-operation gating</h2>
+    <div class="f2">
+    <p>For anything that deletes, writes, sends or spends: is there a confirmation step at all? Is the dangerous path a dry run by default? And — the one most servers miss — can the same approval be spent twice? The SDK binds and expires approval state but does not consume it; closing that gap is the server's job, not the SDK's.</p>
+    </div>
+
+    <h2 class="f3"><span class="n">3</span> — Path handling</h2>
+    <div class="f3">
+    <p>The classic file-write bug: a tool takes a caller-supplied path, resolves it, and acts — without checking the result stayed inside an allowed directory. I look for four things: a root allowlist that denies by default; a symlink check that runs <em>before</em> the path is resolved, not after (resolving first inspects where the link points, not the link); a re-check at the moment of the destructive action, not trust in a stale scan; and identifiers rather than raw paths where possible.</p>
+    </div>
+
+    <h2 class="f4"><span class="n">4</span> — Query and injection safety</h2>
+    <div class="f4">
+    <p>For database and query tools: is "read-only" enforced by <em>parsing</em> the SQL or by pattern-matching it? Are multiple statements accepted (<code>SELECT 1; DROP …</code>)? Can a write hide in a CTE? Does the database login <em>also</em> lack write permission, as a second layer? Pattern-matching a query is not the same as understanding it, and the gap between the two is where the bypass lives.</p>
+    </div>
+
+    <h2 class="f1"><span class="n">5</span> — Untrusted content</h2>
+    <div class="f1">
+    <p>Servers that read the open web, a database, or the filesystem pull in content their user did not write. Does that content flow back into the model's context marked as untrusted, or does a web page's text arrive in the same channel as the user's instructions? On a tool whose whole purpose is reading things you don't control, <code>openWorldHint</code> is the difference between the host treating a result as data and treating it as a command.</p>
+    </div>
+
+    <h2 class="f2"><span class="n">6</span> — The access model</h2>
+    <div class="f2">
+    <p>Least privilege, checked at the design level. Does the agent choose the scope — the roots, the database, the account — or is that fixed when the server starts? Does an empty or missing configuration deny everything, or default to the whole world? A misconfigured server should be useless, not dangerous.</p>
+    </div>
+
+    <h2 class="f3"><span class="n">7</span> — Tests and CI</h2>
+    <div class="f3">
+    <p>Every safety property above is a claim. A claim without a test is a hope. I look for a test behind each dangerous path — and, just as important, whether CI actually runs them on every commit. A careful guard with no CI is one careless merge away from being gone, and nobody would know.</p>
+    </div>
+
+    <h2 class="f4"><span class="n">8</span> — Claim versus reality</h2>
+    <div class="f4">
+    <p>Finally, the whole thing read against its own README. Where the docs promise "read-only" or "safe by default", is that enforced, or asserted? Is there a full write path sitting unused in the codebase, one wired-up call from making the promise false? This is the check that ties the other seven together: the distance between what the server says about itself and what its code makes true.</p>
+    </div>
+
+    <h2>What you get</h2>
+    <p>A paid review runs every one of these against the whole server and writes up what it finds — each finding with a test that proves it, and each safe area noted as checked rather than skipped. The result is a document you can forward to whoever asked whether anyone had looked: an enterprise customer's security team, a compliance reviewer, a partner's vendor questionnaire.</p>
+
+    <div class="cta">
+      <h3>See it applied.</h3>
+      <p>The <a href="/field-notes.html">field notes</a> run this method across thirteen production servers. The individual assessments — starting with a hard look at <a href="/assessment-sweep-mcp.html">my own file-deletion server</a> — show it in full on one server at a time. For a review of yours: <a href="mailto:lesliekadenge@gmail.com">lesliekadenge@gmail.com</a>.</p>
+    </div>
+
+    <p class="method">This checklist evolves as the protocol does — the MCP spec added elicitation for destructive confirmation in 2026, and annotation expectations have hardened over the year. The version here reflects the 2026-07-28 spec. Corrections and additions welcome.</p>
+  </article>
+</main>
+</body>
+</html>

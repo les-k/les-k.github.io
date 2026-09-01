@@ -169,6 +169,26 @@ export const projects = [
     color: 'teal',
   },
   {
+    title: 'MCP review — the method',
+    emoji: '📋',
+    field: 'AI Engineering',
+    description:
+      'The eight-point checklist behind every MCP server security review I do: annotations, destructive-op gating, path handling, query safety, untrusted content, access model, tests, and claim-versus-reality. Published so the standard is readable, not taken on faith.',
+    tech: ['Security', 'MCP', 'Methodology'],
+    link: '/methodology.html',
+    color: 'purple',
+  },
+  {
+    title: 'Assessment: sweep-mcp',
+    emoji: '🔬',
+    field: 'AI Engineering',
+    description:
+      'A full security assessment of my own file-deletion MCP server against the method — including the one real path-handling bug it had (a symlink check that ran after the path resolved through the link), how it was caught, and the two-line fix with a test behind it.',
+    tech: ['Security', 'MCP', 'Assessment'],
+    link: '/assessment-sweep-mcp.html',
+    color: 'coral',
+  },
+  {
     title: 'Credit card fraud detection',
     emoji: '🕵️',
     field: 'Data Science & Analysis',
