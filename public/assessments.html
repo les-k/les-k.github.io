@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>MCP &amp; AI-agent security — Leslie Kadenge</title>
-<meta name="description" content="Security reviews of MCP servers: read the whole server, a test behind every finding, a document you can forward to whoever asked who checked." />
+<title>MCP server assessments — Leslie Kadenge</title>
+<meta name="description" content="Full security assessments of MCP servers against an eight-point method — my own and others', each checkable against the source." />
 <link rel="icon" href="/favicon.svg" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -84,39 +84,34 @@ code{font-family:'Space Grotesk',ui-monospace,monospace;background:#fff;border:2
 .wl span{display:block;margin-top:.25rem;color:#4a4a5e;font-size:.95rem}
 </style>
 </head>
-<body>
-<main>
+<body><main>
   <div class="bar">
     <a class="logo" href="/">les-k<span class="dot">.</span></a>
-    <a class="back" href="/">← back to site</a>
+    <a class="back" href="/mcp-security.html">← MCP security</a>
   </div>
 
   <article class="wrap">
-    <span class="tag">Service · Security</span>
-    <h1>MCP &amp; AI-agent security</h1>
-    <p class="byline">Leslie Kadenge · reviews of the servers that hand AI models real tools and data</p>
+    <span class="tag">Assessments · Security</span>
+    <h1>MCP server assessments</h1>
+    <p class="byline">Leslie Kadenge · full reviews against <a href="/methodology.html">the method</a>, each one checkable against the source</p>
 
-    <p class="lede">An MCP server gives an AI model the keys to something real — a database, a filesystem, a cloud account, a web session. I read those servers and tell you, with a test behind every finding, whether the keys can be misused. The result is a document you can forward to whoever asked: an enterprise customer's security team, a compliance reviewer, a partner's vendor questionnaire.</p>
+    <p class="lede">Each of these runs one MCP server through the same eight-point method and writes up what it found — a worked example of exactly what a paid review produces. They're split deliberately: the ones on my own code show I find and fix real bugs; the ones on code I didn't write show the part that's the actual service — reading someone else's server and telling them, honestly, where it stands.</p>
 
-    <p>Most funded companies' servers are now <em>designed</em> well. Almost none can independently <em>show</em> it — their own tests prove their own assumptions. That gap, between a safety property you assert and one someone has verified, is the work.</p>
+    <h2>My own servers</h2>
+    <p>Where I can be hardest, and show the bugs as well as the fixes.</p>
+    <a href="/assessment-sweep-mcp.html" class="worklink"><div class="wl"><b>sweep-mcp — a file-deletion server</b><span>Seven checks pass; the eighth shows a real path-handling bug it had (a symlink check that ran after the path resolved through the link), how it was caught, and the two-line fix with a test behind it.</span></div></a>
 
-    <h2>What I do</h2>
-    <div class="f1"><p><strong>Review</strong> — you have a server; I read the whole thing and write up what I find, each finding with a test. Fixed price, about a week.</p></div>
-    <div class="f2"><p><strong>Verify</strong> — your server is already good; I produce the independent write-up that proves it, for the customer or auditor who's asking who checked.</p></div>
-    <div class="f3"><p><strong>Build</strong> — you have a product and no server yet; I build one properly — annotations, an access model, guardrails, tests, CI — from day one.</p></div>
-
-    <h2>The work, in the open</h2>
-    <p>Everything below is checkable. That's the point — a review is only worth something if you can see what it looked for.</p>
-
-    <a href="/field-notes.html" class="worklink"><div class="wl"><b>Field notes — the state of MCP security</b><span>What I found reading thirteen production servers from funded companies. The survey behind the method.</span></div></a>
-    <a href="/methodology.html" class="worklink"><div class="wl"><b>The method — how I review an MCP server</b><span>The eight-point checklist behind every review, published so the standard is readable, not taken on faith.</span></div></a>
-    <a href="/assessments.html" class="worklink"><div class="wl"><b>Assessments — the method applied, server by server</b><span>Full reviews of individual servers: my own (sweep-mcp) and ones I didn't write (Vantage, Plane). Each a worked example of what a review produces.</span></div></a>
+    <h2>Servers I didn't write</h2>
+    <p>The actual job — reading code that isn't mine, generously and in good faith. Both are named only for what they do well, and everything is checkable against their public repos.</p>
+    <a href="/assessment-vantage.html" class="worklink"><div class="wl"><b>Vantage — cloud-cost management</b><span>The best tool-annotation discipline I've found: 127 tools whose three safety hints are made non-optional by the type system, so forgetting one is a compile error.</span></div></a>
+    <a href="/assessment-plane.html" class="worklink"><div class="wl"><b>Plane — project management</b><span>Conformance tests that fail the build if a tool's safety annotations ever stop matching what it actually does — plus one design trade-off flagged for discussion, not fix.</span></div></a>
 
     <div class="cta">
-      <h3>Want yours reviewed?</h3>
-      <p>Read the whole server, a document you can forward — fixed price, one week. <a href="mailto:lesliekadenge@gmail.com">lesliekadenge@gmail.com</a>, or the four open-source servers behind this at <a href="https://github.com/les-k">github.com/les-k</a>.</p>
+      <h3>Yours could be next.</h3>
+      <p>A review reads the whole server and writes it up like these — a document you can forward to whoever asked who checked. <a href="/mcp-security.html">How it works</a> · <a href="mailto:lesliekadenge@gmail.com">lesliekadenge@gmail.com</a>.</p>
     </div>
+
+    <p class="method">New assessments are added here as they're done. Each is offered in good faith and names a server only for what it does well; where something is worth improving, it's raised with the maintainer, not published as a gotcha.</p>
   </article>
-</main>
-</body>
+</main></body>
 </html>
