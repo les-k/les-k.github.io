@@ -57,6 +57,14 @@ export const socials = [
 // What I do — combined services from all sites
 export const services = [
   {
+    title: 'MCP & AI-agent Security',
+    emoji: '🛡️',
+    blurb:
+      'Security reviews of MCP servers — the connectors that hand AI agents real tools and data. I read the whole server and write up what I find, a test behind every finding: a document you can forward to whoever asked who checked.',
+    link: '/mcp-security.html',
+    cta: 'See the work →',
+  },
+  {
     title: 'AI Engineering',
     emoji: '🧠',
     blurb:
@@ -158,36 +166,6 @@ export const skillGroups = [
 ]
 
 export const projects = [
-  {
-    title: 'MCP server security — field notes',
-    emoji: '🔍',
-    field: 'AI Engineering',
-    description:
-      'What I found reading thirteen production MCP servers from funded companies: the ecosystem hardened faster than the fear narrative admits, and the gap worth paying for is between designing securely and being able to show it.',
-    tech: ['Security', 'MCP', 'Writing'],
-    link: '/field-notes.html',
-    color: 'teal',
-  },
-  {
-    title: 'MCP review — the method',
-    emoji: '📋',
-    field: 'AI Engineering',
-    description:
-      'The eight-point checklist behind every MCP server security review I do: annotations, destructive-op gating, path handling, query safety, untrusted content, access model, tests, and claim-versus-reality. Published so the standard is readable, not taken on faith.',
-    tech: ['Security', 'MCP', 'Methodology'],
-    link: '/methodology.html',
-    color: 'purple',
-  },
-  {
-    title: 'Assessment: sweep-mcp',
-    emoji: '🔬',
-    field: 'AI Engineering',
-    description:
-      'A full security assessment of my own file-deletion MCP server against the method — including the one real path-handling bug it had (a symlink check that ran after the path resolved through the link), how it was caught, and the two-line fix with a test behind it.',
-    tech: ['Security', 'MCP', 'Assessment'],
-    link: '/assessment-sweep-mcp.html',
-    color: 'coral',
-  },
   {
     title: 'Credit card fraud detection',
     emoji: '🕵️',

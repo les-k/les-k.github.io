@@ -16,13 +16,20 @@ export default function Services() {
             </div>
             <h3 className="service-title">{s.title}</h3>
             <p className="service-blurb">{s.blurb}</p>
-            {/* Opens in the browser's own PDF viewer, which has a download
-                button of its own — so the reader decides, rather than landing
-                a file in their downloads folder for clicking a link. */}
-            <a href={s.resume} target="_blank" rel="noreferrer" className="service-resume">
-              View resume (PDF) →
-              <span className="visually-hidden"> (opens in a new tab)</span>
-            </a>
+            {/* A service points either to a resume PDF (opens in the browser's
+                own viewer, so the reader decides rather than landing a file in
+                their downloads) or to a page on this site — the MCP work — in
+                which case it stays in the same tab as ordinary navigation. */}
+            {s.link ? (
+              <a href={s.link} className="service-resume">
+                {s.cta || 'Read more →'}
+              </a>
+            ) : (
+              <a href={s.resume} target="_blank" rel="noreferrer" className="service-resume">
+                View resume (PDF) →
+                <span className="visually-hidden"> (opens in a new tab)</span>
+              </a>
+            )}
           </div>
         ))}
       </div>
