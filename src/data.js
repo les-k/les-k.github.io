@@ -65,6 +65,14 @@ export const services = [
     cta: 'See the work →',
   },
   {
+    title: 'Vibe-Code Review',
+    emoji: '🔍',
+    blurb:
+      "Production-readiness and compliance across the whole app-development space — apps built with AI (Lovable, Bolt, v0, Cursor, Replit), by a freelancer, or in-house. I read the code and get it ready to launch, take payments, and pass a security or privacy review — ranked findings, a fix for each.",
+    link: '/vibe-code-review.html',
+    cta: 'See pricing →',
+  },
+  {
     title: 'AI Engineering',
     emoji: '🧠',
     blurb:

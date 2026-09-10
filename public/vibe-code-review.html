@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Vibe-Code Review — Leslie Kadenge</title>
+<meta name="description" content="Production-readiness and compliance for apps — built with AI, by a freelancer, or in-house. Read by hand and made secure, stable and ready to launch, take payments, and pass a security or privacy review." />
+<link rel="icon" href="/favicon.svg" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600;800;900&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet" />
+<style>
+:root{
+  --bg:#fff8f0; --ink:#1a1a2e;
+  --coral:#ff5d5d; --yellow:#ffc839; --purple:#7c5cff; --teal:#2ec4b6; --pink:#ff8fab;
+  --border:3px solid var(--ink);
+  --shadow:6px 6px 0 var(--ink);
+  --shadow-sm:3px 3px 0 var(--ink);
+  --font-display:'Unbounded',sans-serif;
+  --font-body:'Space Grotesk',sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:var(--font-body);font-size:1.05rem;line-height:1.65;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(var(--ink) 1px,transparent 1px);background-size:28px 28px;opacity:.06;pointer-events:none;z-index:0}
+main{position:relative;z-index:1}
+
+.bar{position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;
+  padding:.9rem 1.5rem;background:var(--bg);border-bottom:var(--border)}
+.logo{font-family:var(--font-display);font-weight:900;font-size:1.25rem;color:var(--ink);text-decoration:none}
+.logo .dot{color:var(--coral)}
+.back{font-weight:700;text-decoration:none;color:var(--ink);border:var(--border);background:var(--yellow);
+  padding:.4rem .8rem;box-shadow:var(--shadow-sm);transition:transform .1s,box-shadow .1s}
+.back:hover{transform:translate(-2px,-2px);box-shadow:5px 5px 0 var(--ink)}
+
+.wrap{max-width:760px;margin:0 auto;padding:3rem 1.5rem 4rem}
+
+.tag{display:inline-block;font-family:var(--font-display);font-weight:800;font-size:.72rem;letter-spacing:.08em;
+  text-transform:uppercase;background:var(--purple);color:#fff;border:var(--border);padding:.3rem .7rem;box-shadow:var(--shadow-sm)}
+h1{font-family:var(--font-display);font-weight:900;line-height:1.05;font-size:clamp(2rem,6vw,3.2rem);margin:1.2rem 0 .8rem}
+.byline{font-weight:500;color:#4a4a5e;font-size:1rem}
+.lede{font-size:1.18rem;margin-top:1.6rem}
+
+h2{font-family:var(--font-display);font-weight:800;font-size:clamp(1.3rem,3.5vw,1.7rem);line-height:1.15;
+  margin:2.8rem 0 1rem;padding-bottom:.5rem;border-bottom:var(--border)}
+p{margin:1rem 0}
+strong{font-weight:700}
+em{font-style:italic}
+
+/* checklist grid */
+.checks{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:.7rem;margin:1.4rem 0}
+.chk{border:var(--border);background:#fff;box-shadow:var(--shadow-sm);padding:.7rem .8rem;font-size:.95rem}
+.chk b{font-family:var(--font-display);font-weight:700;font-size:.9rem;display:block;margin-bottom:.15rem}
+.chk span{font-size:.85rem;color:#4a4a5e}
+
+/* pricing tiers */
+.tiers{display:grid;gap:1rem;margin:1.4rem 0}
+.tier{border:var(--border);background:#fff;box-shadow:var(--shadow-sm);padding:1.1rem 1.2rem;position:relative}
+.tier.pop{background:var(--yellow);box-shadow:var(--shadow)}
+.tier-top{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:.4rem}
+.tier-name{font-family:var(--font-display);font-weight:800;font-size:1.12rem}
+.tier-price{font-family:var(--font-display);font-weight:900;font-size:1.35rem;color:var(--purple)}
+.tier.pop .tier-price{color:var(--ink)}
+.tier-turn{font-size:.82rem;color:#4a4a5e;font-weight:500;margin-top:.1rem}
+.tier-body{margin-top:.55rem;font-size:.98rem}
+.pop-flag{position:absolute;top:-14px;right:14px;font-family:var(--font-display);font-weight:800;font-size:.62rem;
+  letter-spacing:.06em;text-transform:uppercase;background:var(--coral);color:#fff;border:var(--border);
+  padding:.2rem .5rem;box-shadow:var(--shadow-sm)}
+.pricing-note{font-size:.9rem;color:#4a4a5e;font-style:italic;margin-top:.4rem}
+
+/* how it works */
+.steps{counter-reset:step;margin:1.2rem 0}
+.step{border-left:10px solid var(--teal);padding:.3rem 0 .3rem 1rem;margin:.8rem 0}
+.step:nth-child(2){border-color:var(--purple)}
+.step:nth-child(3){border-color:var(--coral)}
+.step:nth-child(4){border-color:var(--yellow)}
+.step b{font-family:var(--font-display);font-weight:700}
+
+.method{margin-top:3rem;padding-top:1.4rem;border-top:var(--border);font-size:.9rem;color:#4a4a5e;font-style:italic}
+
+.cta{margin-top:2.4rem;border:var(--border);background:var(--ink);color:var(--bg);box-shadow:var(--shadow);padding:1.6rem 1.5rem}
+.cta h3{font-family:var(--font-display);font-weight:800;font-size:1.3rem;margin-bottom:.5rem}
+.cta a{color:var(--yellow);font-weight:700}
+.cta .pay{display:block;margin-top:.8rem;font-size:.9rem;color:#c9c9d6}
+</style>
+</head>
+<body>
+<main>
+  <div class="bar">
+    <a class="logo" href="/">les-k<span class="dot">.</span></a>
+    <a class="back" href="/">← back to site</a>
+  </div>
+
+  <article class="wrap">
+    <span class="tag">Service · Readiness &amp; Compliance</span>
+    <h1>Vibe-Code Review</h1>
+    <p class="byline">Leslie Kadenge · getting apps production-ready and compliant — however they were built</p>
+
+    <p class="lede">Whether your app was built with AI tools (Lovable, Bolt, v0, Cursor, Replit), by a freelancer, or by your own team, I review the code and prepare it for launch. Applications built quickly often expose API keys, lack proper authentication, leak user data, mishandle personal information, and fail under real traffic or payment load. A review before launch finds these issues while they are still straightforward to fix.</p>
+
+    <p>An application must meet two standards before it goes live. It has to be secure, stable, and able to handle real users; and it has to withstand external review — a customer's security team, an app-store submission, or a privacy or vendor questionnaire. I assess the whole application at the code level and return it ready for both.</p>
+
+    <h2>What I check</h2>
+    <div class="checks">
+      <div class="chk"><b>Exposed secrets</b><span>API keys, tokens and credentials leaking to the client or the repo</span></div>
+      <div class="chk"><b>Auth &amp; access</b><span>Can a stranger reach data that isn't theirs?</span></div>
+      <div class="chk"><b>Injection</b><span>SQL, prompt injection, unsafe calls on untrusted input</span></div>
+      <div class="chk"><b>Payment flows</b><span>The part you cannot afford to get wrong</span></div>
+      <div class="chk"><b>Data &amp; privacy</b><span>What leaks to the browser or the logs</span></div>
+      <div class="chk"><b>Errors &amp; scale</b><span>Will it survive 100 real users, not just the demo?</span></div>
+      <div class="chk"><b>Dependencies</b><span>Risky packages and misconfigured hosting</span></div>
+      <div class="chk"><b>Privacy &amp; compliance</b><span>Data handling that stands up to a privacy or vendor review</span></div>
+      <div class="chk"><b>Launch readiness</b><span>The checklist before an app-store submission or go-live</span></div>
+    </div>
+
+    <h2>Services &amp; pricing</h2>
+    <div class="tiers">
+      <div class="tier">
+        <div class="tier-top">
+          <div><span class="tier-name">Pre-Launch Spot-Check</span><div class="tier-turn">~half a day</div></div>
+          <span class="tier-price">$200</span>
+        </div>
+        <p class="tier-body">The top 5–10 things most likely to bite you, found fast. A short, prioritised report. A go / no-go safety read before you ship.</p>
+      </div>
+      <div class="tier pop">
+        <span class="pop-flag">Most popular</span>
+        <div class="tier-top">
+          <div><span class="tier-name">Full Readiness &amp; Compliance Review</span><div class="tier-turn">1–2 days</div></div>
+          <span class="tier-price">$550–2,000</span>
+        </div>
+        <p class="tier-body">A complete pass across everything above — security, stability and compliance. A severity-ranked report — Critical / High / Medium / Low — with the exact file, why it matters, and how to fix it, plus a prioritised fix list that gets the app ready to launch and ready for review.</p>
+      </div>
+      <div class="tier">
+        <div class="tier-top">
+          <div><span class="tier-name">Review + Remediation</span><div class="tier-turn">by scope</div></div>
+          <span class="tier-price">from $2,200</span>
+        </div>
+        <p class="tier-body">Everything in the Full Review, and I fix the Critical and High findings myself — you get back a safer app, not just a list.</p>
+      </div>
+    </div>
+    <p class="pricing-note">Fixed price, agreed before I start — never hourly, no surprise invoice. Price within a range depends on app size and whether it handles payments or user data.</p>
+
+    <h2>How it works</h2>
+    <div class="steps">
+      <div class="step"><p><b>1. Share it.</b> You send the repo (or a read-only copy) and a line on what the app does.</p></div>
+      <div class="step"><p><b>2. I read it.</b> By hand — the actual code, not just a scanner's output.</p></div>
+      <div class="step"><p><b>3. You get the report.</b> Plain English, every finding ranked, each with the file and the fix.</p></div>
+      <div class="step"><p><b>4. Optional fixes.</b> I close the Critical and High items and hand back a safer app.</p></div>
+    </div>
+    <p>Turnaround: <strong>1–2 business days</strong> for a Full Review. Need it before a launch date? Say so and I'll tell you honestly if it fits.</p>
+
+    <div class="cta">
+      <h3>Get your app ready and compliant before you ship</h3>
+      <p>To book a review, get in touch: <a href="mailto:lesliekadenge@gmail.com">lesliekadenge@gmail.com</a>.</p>
+      <span class="pay">Payment by bank transfer, crypto or PayPal.</span>
+    </div>
+  </article>
+</main>
+</body>
+</html>
